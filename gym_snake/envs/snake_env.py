@@ -34,7 +34,7 @@ class SnakeEnv(gym.Env):
 
     def render(self, mode='human', close=False):
         if self.viewer is None:
-            self.viewer = plt.imshow(self.last_obs)
+            self.viewer = plt.imshow(self.last_obs, interpolation='none')
         else:
             self.viewer.set_data(self.last_obs)
         plt.pause(0.1)
