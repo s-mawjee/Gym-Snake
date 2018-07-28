@@ -1,6 +1,8 @@
 from gym_snake.envs.snake import Snake
 from gym_snake.envs.snake import Grid
+from gym_snake.envs.snake.view import LocalView
 import numpy as np
+import time
 
 class Controller():
     """
@@ -118,6 +120,8 @@ class Controller():
         if type(directions) == type(int()):
             directions = [directions]
 
+
+
         for i, direction in enumerate(directions):
             if self.snakes[i] is None and self.dead_snakes[i] is not None:
                 self.kill_snake(i)
@@ -125,6 +129,13 @@ class Controller():
             rewards.append(self.move_result(direction, i))
 
         done = self.snakes_remaining < 1 or self.grid.open_space < 1
+
+        lw = LocalView(self.grid)
+        for snake in self.snakes:
+            if snake:
+                print("step")
+                lw.get(snake.head, 0)
+
         if len(rewards) is 1:
             return self.grid.grid.copy(), rewards[0], done, {"snakes_remaining":self.snakes_remaining}
         else:
