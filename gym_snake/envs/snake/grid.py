@@ -12,10 +12,17 @@ class Grid():
     It is also assumed that HEAD_COLOR has a 255 value as its 0 channel.
     """
 
-    BODY_COLOR = np.array([1,0,0], dtype=np.uint8)
-    HEAD_COLOR = np.array([255, 0, 0], dtype=np.uint8)
-    FOOD_COLOR = np.array([0,0,255], dtype=np.uint8)
-    SPACE_COLOR = np.array([0,255,0], dtype=np.uint8)
+    # BODY_COLOR = np.array([1,0,0], dtype=np.uint8)
+    # HEAD_COLOR = np.array([255, 0, 0], dtype=np.uint8)
+    # FOOD_COLOR = np.array([0,0,255], dtype=np.uint8)
+    # SPACE_COLOR = np.array([0,255,0], dtype=np.uint8)
+    # WALL_COLOR = np.array([0,0,0], dtype=np.uint8)
+
+    BODY_COLOR = np.array(-1, dtype=np.int8)
+    HEAD_COLOR = np.array(-2, dtype=np.int8)
+    FOOD_COLOR = np.array(2, dtype=np.uint8)
+    SPACE_COLOR = np.array(1, dtype=np.uint8)
+    WALL_COLOR = np.array(0, dtype=np.uint8)
 
     def __init__(self, grid_size=[30,30], unit_size=10, unit_gap=1):
         """
@@ -29,9 +36,12 @@ class Grid():
         self.grid_size = np.asarray(grid_size, dtype=np.int) # size in terms of units
         height = self.grid_size[1]*self.unit_size
         width = self.grid_size[0]*self.unit_size
-        channels = 3
-        self.grid = np.zeros((height, width, channels), dtype=np.uint8)
-        self.grid[:,:,:] = self.SPACE_COLOR
+        # channels = len(self.BODY_COLOR)
+        # self.grid = np.zeros((height, width, channels), dtype=np.uint8)
+
+        self.grid = np.zeros((height, width), dtype=np.int8)
+
+        self.grid[:,:] = self.SPACE_COLOR
         self.open_space = grid_size[0]*grid_size[1]
 
     def check_death(self, head_coord):
@@ -49,7 +59,7 @@ class Grid():
         coord - x,y integer coordinates as a tuple, list, or ndarray
         """
 
-        return self.grid[int(coord[1]*self.unit_size), int(coord[0]*self.unit_size), :]
+        return self.grid[int(coord[1]*self.unit_size), int(coord[0]*self.unit_size)]
 
     def connect(self, coord1, coord2, color=BODY_COLOR):
         """
@@ -73,14 +83,14 @@ class Grid():
             min_x, max_x = sorted([coord1[0], coord2[0]])
             min_x = min_x*self.unit_size+self.unit_size-self.unit_gap
             max_x = max_x*self.unit_size
-            self.grid[coord1[1]*self.unit_size, min_x:max_x, :] = color
-            self.grid[coord1[1]*self.unit_size+self.unit_size-self.unit_gap-1, min_x:max_x, :] = color
+            self.grid[coord1[1]*self.unit_size, min_x:max_x] = color
+            self.grid[coord1[1]*self.unit_size+self.unit_size-self.unit_gap-1, min_x:max_x] = color
         else: # y values differ
             min_y, max_y = sorted([coord1[1], coord2[1]])
             min_y = min_y*self.unit_size+self.unit_size-self.unit_gap
             max_y = max_y*self.unit_size
-            self.grid[min_y:max_y, coord1[0]*self.unit_size, :] = color
-            self.grid[min_y:max_y, coord1[0]*self.unit_size+self.unit_size-self.unit_gap-1, :] = color
+            self.grid[min_y:max_y, coord1[0]*self.unit_size] = color
+            self.grid[min_y:max_y, coord1[0]*self.unit_size+self.unit_size-self.unit_gap-1] = color
 
     def cover(self, coord, color):
         """
@@ -97,7 +107,7 @@ class Grid():
         end_x = x+self.unit_size-self.unit_gap
         y = int(coord[1]*self.unit_size)
         end_y = y+self.unit_size-self.unit_gap
-        self.grid[y:end_y, x:end_x, :] = np.asarray(color, dtype=np.uint8)
+        self.grid[y:end_y, x:end_x] = np.asarray(color, dtype=np.int8)
         return True
 
     def draw(self, coord, color):
@@ -149,7 +159,7 @@ class Grid():
         end_x = x+self.unit_size
         y = int(coord[1]*self.unit_size)
         end_y = y+self.unit_size
-        self.grid[y:end_y, x:end_x, :] = self.SPACE_COLOR
+        self.grid[y:end_y, x:end_x] = self.SPACE_COLOR
         return True
 
     def erase_connections(self, coord):
@@ -167,14 +177,14 @@ class Grid():
         end_x = x+self.unit_size
         y = int(coord[1]*self.unit_size)+self.unit_size-self.unit_gap
         end_y = y+self.unit_gap
-        self.grid[y:end_y, x:end_x, :] = self.SPACE_COLOR
+        self.grid[y:end_y, x:end_x] = self.SPACE_COLOR
 
         # Erase the Vertical Column to Right of Coord
         x = int(coord[0]*self.unit_size)+self.unit_size-self.unit_gap
         end_x = x+self.unit_gap
         y = int(coord[1]*self.unit_size)
         end_y = y+self.unit_size
-        self.grid[y:end_y, x:end_x, :] = self.SPACE_COLOR
+        self.grid[y:end_y, x:end_x] = self.SPACE_COLOR
 
         return True
 
@@ -221,6 +231,7 @@ class Grid():
         coord_not_found = True
         while(coord_not_found):
             coord = (np.random.randint(0,self.grid_size[0]), np.random.randint(0,self.grid_size[1]))
+            print(self.color_of(coord))
             if np.array_equal(self.color_of(coord), self.SPACE_COLOR):
                 coord_not_found = False
         self.draw(coord, self.FOOD_COLOR)
@@ -243,4 +254,4 @@ class Grid():
         """
 
         color = self.color_of(coord)
-        return np.array_equal(color, self.BODY_COLOR) or color[0] == self.HEAD_COLOR[0]
+        return np.array_equal(color, self.BODY_COLOR) or color == self.HEAD_COLOR

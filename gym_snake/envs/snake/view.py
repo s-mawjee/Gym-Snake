@@ -7,6 +7,7 @@ import time
 class BaseView:
     def __init__(self, grid):
         self.grid = grid
+        self.prev_action = Snake.DOWN
 
     def get(self, action, snake_id):
         return grid
@@ -15,34 +16,43 @@ class LocalView:
     def __init__(self, grid):
         #super.__init__(BaseView, grid)
         self.grid = grid
+        self.prev_action = Snake.DOWN
 
     def get(self, offset, action):
-        #assert(self.grid.grid.shape % 2 == [0, 0])
+        print(np.asarray(self.grid.grid.shape[0:2]) % 2)
+        assert(np.array_equal(np.asarray(self.grid.grid.shape[0:2]) % 2, np.asarray([1, 1])))
         print(self.grid)
-        local_grid = np.zeros((self.grid.grid.shape[0]*2, self.grid.grid.shape[1]*2, self.grid.grid.shape[2]), np.uint8)
-        grid_size = np.array(self.grid.grid.shape[0:2], dtype=np.uint8)
+        local_grid = np.zeros((self.grid.grid.shape[0]*2, self.grid.grid.shape[1]*2), np.int8)
+        grid_size = np.array(self.grid.grid.shape[0:2], dtype=np.int8)
+        offset = np.roll(offset, 1)
         start = grid_size - offset
 
         assert(start[0] >= 0 and start[1] >= 0)
         end = start + grid_size
-        print(self.grid.grid.shape)
-        print(start)
-        print(end)
+
         local_grid[start[0]:end[0],  start[1]:end[1]] = self.grid.grid
 
-        print(local_grid[0, 0])
-
-        #np.roll(local_grid, -offset[0], axis = 0)
-        #np.roll(local_grid, offset[1], axis = 1)
-
-
+        local_grid = np.rot90(local_grid, -self.get_rotation(action))
+        self.prev_action = action
         plt.imshow(local_grid, interpolation='none')
         plt.show()
-        # plt.imshow(self.grid.grid, interpolation='none')
-        # plt.show()
-
-        #
-
-        #if action == Snake.UP:
+        return local_grid
 
 
+    def get_rotation(self, action):
+        assert(np.abs(self.prev_action - action) != 2)
+        return -self.prev_action - action
+
+class LocalAction:
+    FWD = 0
+    RIGHT = -1
+    LEFT = 1
+    def __init__(self):
+
+        self.prev_action = Snake.DOWN
+
+    def transform(self, local_action):
+        assert(local_action == self.FWD or local_action == self.RIGHT or local_action == self.LEFT)
+        action = (self.prev_action - local_action % 5)
+        self.prev_action = action
+        return action

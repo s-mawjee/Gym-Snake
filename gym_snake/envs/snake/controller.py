@@ -24,7 +24,7 @@ class Controller():
         for i in range(1,n_snakes+1):
             start_coord = [i*grid_size[0]//(n_snakes+1), snake_size+1]
             self.snakes.append(Snake(start_coord, snake_size))
-            color = [self.grid.HEAD_COLOR[0], i*10, 0]
+            color = self.grid.HEAD_COLOR
             self.snakes[-1].head_color = color
             self.grid.draw_snake(self.snakes[-1], color)
             self.dead_snakes.append(None)
@@ -130,13 +130,14 @@ class Controller():
 
         done = self.snakes_remaining < 1 or self.grid.open_space < 1
 
+        obs = []
+
         lw = LocalView(self.grid)
-        for snake in self.snakes:
+        for snake, action in zip(self.snakes, directions):
             if snake:
-                print("step")
-                lw.get(snake.head, 0)
+                obs.append(lw.get(snake.head, action))
 
         if len(rewards) is 1:
-            return self.grid.grid.copy(), rewards[0], done, {"snakes_remaining":self.snakes_remaining}
+            return obs, rewards[0], done, {"snakes_remaining":self.snakes_remaining}
         else:
-            return self.grid.grid.copy(), rewards, done, {"snakes_remaining":self.snakes_remaining}
+            return obs, rewards, done, {"snakes_remaining":self.snakes_remaining}
