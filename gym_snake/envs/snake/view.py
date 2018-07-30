@@ -18,11 +18,9 @@ class LocalView:
         self.grid = grid
         self.prev_action = Snake.DOWN
 
-    def get(self, offset, action):
-        print(np.asarray(self.grid.grid.shape[0:2]) % 2)
+    def get(self, offset = (0,0), action = None ):
         assert(np.array_equal(np.asarray(self.grid.grid.shape[0:2]) % 2, np.asarray([1, 1])))
-        print(self.grid)
-        local_grid = np.zeros((self.grid.grid.shape[0]*2, self.grid.grid.shape[1]*2), np.int8)
+        local_grid = np.zeros((self.grid.grid.shape[0]*2+1, self.grid.grid.shape[1]*2+1), np.int8)
         grid_size = np.array(self.grid.grid.shape[0:2], dtype=np.int8)
         offset = np.roll(offset, 1)
         start = grid_size - offset
@@ -32,12 +30,14 @@ class LocalView:
 
         local_grid[start[0]:end[0],  start[1]:end[1]] = self.grid.grid
 
-        local_grid = np.rot90(local_grid, -self.get_rotation(action))
-        self.prev_action = action
-        plt.imshow(local_grid, interpolation='none')
-        plt.show()
-        return local_grid
+        if(action):
+            local_grid = np.rot90(local_grid, -self.get_rotation(action))
 
+        self.prev_action = action
+        #plt.imshow(local_grid, interpolation='none')
+        #plt.show()
+
+        return local_grid
 
     def get_rotation(self, action):
         assert(np.abs(self.prev_action - action) != 2)
@@ -53,6 +53,6 @@ class LocalAction:
 
     def transform(self, local_action):
         assert(local_action == self.FWD or local_action == self.RIGHT or local_action == self.LEFT)
-        action = (self.prev_action - local_action % 5)
+        action = (self.prev_action - local_action) % 4
         self.prev_action = action
         return action

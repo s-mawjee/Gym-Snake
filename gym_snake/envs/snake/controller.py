@@ -16,6 +16,7 @@ class Controller():
         assert snake_size < grid_size[1]//2
         assert unit_gap >= 0 and unit_gap < unit_size
 
+        self.n_snakes = n_snakes
         self.snakes_remaining = n_snakes
         self.grid = Grid(grid_size, unit_size, unit_gap)
 
@@ -116,26 +117,35 @@ class Controller():
                 return self.grid.grid.copy(), [0]*len(directions), True, {"snakes_remaining":self.snakes_remaining}
 
         rewards = []
+        #
+        # if type(directions) == type(int()):
+        #     directions = [directions]
 
-        if type(directions) == type(int()):
-            directions = [directions]
+        directions = [directions]
 
-
+        obs = []
+        lw = LocalView(self.grid)
 
         for i, direction in enumerate(directions):
-            if self.snakes[i] is None and self.dead_snakes[i] is not None:
-                self.kill_snake(i)
             self.move_snake(direction,i)
             rewards.append(self.move_result(direction, i))
 
+            if self.snakes[i]:
+                obs.append(lw.get(self.snakes[i].head, direction))
+            elif self.dead_snakes[i]:
+                obs.append(lw.get(self.dead_snakes[i].head, direction))
+            else:
+                raise Exception("Snakes inconsistent")
+
+            if self.snakes[i] is None :
+                if self.dead_snakes[i] is not None:
+                    self.kill_snake(i)
+
         done = self.snakes_remaining < 1 or self.grid.open_space < 1
 
-        obs = []
 
-        lw = LocalView(self.grid)
-        for snake, action in zip(self.snakes, directions):
-            if snake:
-                obs.append(lw.get(snake.head, action))
+        assert(len(obs) > 0)
+        assert(len(obs) == len(directions))
 
         if len(rewards) is 1:
             return obs, rewards[0], done, {"snakes_remaining":self.snakes_remaining}

@@ -231,7 +231,6 @@ class Grid():
         coord_not_found = True
         while(coord_not_found):
             coord = (np.random.randint(0,self.grid_size[0]), np.random.randint(0,self.grid_size[1]))
-            print(self.color_of(coord))
             if np.array_equal(self.color_of(coord), self.SPACE_COLOR):
                 coord_not_found = False
         self.draw(coord, self.FOOD_COLOR)
