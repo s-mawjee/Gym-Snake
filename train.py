@@ -15,9 +15,9 @@ def main():
     parser.add_argument('--prioritized', type=int, default=1)
     parser.add_argument('--prioritized-replay-alpha', type=float, default=0.6)
     parser.add_argument('--dueling', type=int, default=1)
-    parser.add_argument('--num-timesteps', type=int, default=int(10e4))
-    parser.add_argument('--checkpoint-freq', type=int, default=10000)
-    parser.add_argument('--checkpoint-path', type=str, default=None)
+    parser.add_argument('--num-timesteps', type=int, default=int(2000))
+    parser.add_argument('--checkpoint-freq', type=int, default=100)
+    parser.add_argument('--checkpoint-path', type=str, default='/tmp')
 
     args = parser.parse_args()
     logger.configure()
@@ -36,7 +36,7 @@ def main():
         is_solved = lcl['t'] > 100 and sum(lcl['episode_rewards'][-101:-1]) / 100 >= 199
         return is_solved
 
-    deepq.learn(
+    act = deepq.learn(
         env,
         q_func=model,
         lr=1e-3,
@@ -47,15 +47,15 @@ def main():
         #train_freq=4,
         #learning_starts=5,
         target_network_update_freq=1000,
-        gamma=0.99,
+        gamma=1.0,
         prioritized_replay=bool(args.prioritized),
         prioritized_replay_alpha=args.prioritized_replay_alpha,
-        #checkpoint_freq=args.checkpoint_freq,
-        #checkpoint_path=args.checkpoint_path,
+        checkpoint_freq=args.checkpoint_freq,
+        checkpoint_path=args.checkpoint_path,
         print_freq=10,
         #callback=callback
     )
-
+    act.save("snake_model.pkl")
     env.close()
 
 
