@@ -30,18 +30,19 @@ class LocalView:
 
         local_grid[start[0]:end[0],  start[1]:end[1]] = self.grid.grid
 
+        # print("ACITON "+str(action))
         if(action):
             local_grid = np.rot90(local_grid, -self.get_rotation(action))
 
         self.prev_action = action
-        #plt.imshow(local_grid, interpolation='none')
-        #plt.show()
+        # plt.imshow(local_grid, interpolation='none')
+        # plt.show()
 
         return local_grid
 
     def get_rotation(self, action):
         assert(np.abs(self.prev_action - action) != 2)
-        return -self.prev_action - action
+        return -(self.prev_action - action)
 
 class LocalAction:
     FWD = 0
