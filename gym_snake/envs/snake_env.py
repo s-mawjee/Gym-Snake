@@ -40,18 +40,17 @@ class SnakeEnv(gym.Env):
         # print(str(rewards))
         # print(str(done))
         # print(str(info))
-        self.last_obs = np.asarray(np.moveaxis(np.asarray(self.last_obs), 0, -1))
-        return self.last_obs, rewards, done, info
+        return np.expand_dims(np.squeeze(self.last_obs, axis=0), -1), rewards, done, info
 
     def reset(self):
         self.controller = Controller(self.grid_size, self.unit_size, self.unit_gap, self.snake_size, self.n_snakes, self.n_foods, random_init=self.random_init)
 
         #self.last_obs = self.controller.grid.grid
-        lw = LocalView(self.controller.grid)
-        self.last_obs = lw.get(self.controller.snakes[0].head)
+        lw = LocalView()
+        self.last_obs = lw.get(self.controller.grid, self.controller.snakes[0].head)
         # print("RESET")
         # print(np.expand_dims(self.last_obs, -1).shape)
-        self.last_obs = np.asarray(np.expand_dims(self.last_obs, -1))
+        self.last_obs = np.asarray(self.last_obs)
         return self.last_obs
 
     def render(self, mode='human', close=False):

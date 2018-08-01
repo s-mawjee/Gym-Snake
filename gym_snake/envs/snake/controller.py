@@ -124,16 +124,16 @@ class Controller():
         directions = [directions]
 
         obs = []
-        lw = LocalView(self.grid)
+        lw = LocalView()
 
         for i, direction in enumerate(directions):
             self.move_snake(direction,i)
             rewards.append(self.move_result(direction, i))
 
             if self.snakes[i]:
-                obs.append(lw.get(self.snakes[i].head, direction))
+                obs.append(lw.get(self.grid, self.snakes[i].head, direction))
             elif self.dead_snakes[i]:
-                obs.append(lw.get(self.dead_snakes[i].head, direction))
+                obs.append(lw.get(self.grid, self.dead_snakes[i].head, direction))
             else:
                 raise Exception("Snakes inconsistent")
 

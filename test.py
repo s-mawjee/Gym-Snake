@@ -11,7 +11,7 @@ while True:
     while True:
 
         obs, rewards, done, info = env.step(LocalAction.RIGHT+1)
-        print(rewards)
+        print(np.asarray(obs).shape)
         assert(np.asarray(obs).shape == (27, 27, 1))
         #env.render()
         if done:
