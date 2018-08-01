@@ -15,7 +15,6 @@ def main():
     args = parser.parse_args()
     logger.configure()
     env = gym_snake.envs.SnakeEnv(grid_size=[13, 13], unit_size=1, snake_size=4, unit_gap=0, action_transformer=LocalAction())
-    env = bench.Monitor(env, logger.get_dir())
     model = deepq.models.cnn_to_mlp(
         convs=[(32, 8, 1), (64, 4, 1), (64, 3, 1)],
         hiddens=[256],
