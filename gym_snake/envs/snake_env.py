@@ -56,13 +56,13 @@ class SnakeEnv(gym.Env):
 
     def render(self, mode='human', close=False):
         if self.viewer is None:
-            self.viewer = plt.imshow(np.squeeze(self.last_obs), interpolation='none')
+            self.viewer = plt.imshow(np.squeeze(self.controller.grid.grid), interpolation='none')
             #self.viewer = plt.imshow(self.controller.grid.grid, interpolation='none')
         else:
-            self.viewer.set_data(np.squeeze(self.last_obs))
+            self.viewer.set_data(np.squeeze(self.controller.grid.grid))
             #self.viewer.set_data(np.squeeze(self.controller.grid.grid))
 
-        plt.pause(1.4)
+        plt.pause(0.07)
         plt.draw()
 
     def seed(self, x):
