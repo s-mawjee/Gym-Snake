@@ -15,9 +15,9 @@ def main():
     parser.add_argument('--prioritized', type=int, default=1)
     parser.add_argument('--prioritized-replay-alpha', type=float, default=0.6)
     parser.add_argument('--dueling', type=int, default=1)
-    parser.add_argument('--num-timesteps', type=int, default=int(2000))
+    parser.add_argument('--num-timesteps', type=int, default=int(100000))
     parser.add_argument('--checkpoint-freq', type=int, default=100)
-    parser.add_argument('--checkpoint-path', type=str, default='/tmp')
+    parser.add_argument('--checkpoint-path', type=str, default='/home/pasa/deeplearning/tf_models/snake')
 
     args = parser.parse_args()
     logger.configure()
@@ -39,11 +39,11 @@ def main():
     act = deepq.learn(
         env,
         q_func=model,
-        lr=1e-3,
+        lr=1e-4,
         max_timesteps=args.num_timesteps,
         buffer_size=10000,
         exploration_fraction=0.1,
-        exploration_final_eps=0.01,
+        exploration_final_eps=0.001,
         #train_freq=4,
         #learning_starts=5,
         target_network_update_freq=1000,
@@ -55,8 +55,19 @@ def main():
         print_freq=10,
         #callback=callback
     )
-    act.save("snake_model.pkl")
-    env.close()
+
+    env = gym_snake.envs.SnakeEnv(grid_size=[13, 13], unit_size=1, snake_size=4, unit_gap=0,
+                                  action_transformer=LocalAction())
+    while True:
+        obs, done = env.reset(), False
+        episode_rew = 0
+        while True:
+            env.render()
+            obs, rew, done, _ = env.step(act(obs[None])[0])
+            episode_rew += rew
+            if done:
+                break
+        print("Episode reward", episode_rew)
 
 
 if __name__ == '__main__':
