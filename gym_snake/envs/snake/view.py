@@ -13,22 +13,21 @@ class BaseView:
         return grid
 
 class LocalView:
-    def __init__(self, grid):
+    def __init__(self):
         #super.__init__(BaseView, grid)
-        self.grid = grid
         self.prev_action = Snake.DOWN
 
-    def get(self, offset = (0,0), action = None):
-        assert(np.array_equal(np.asarray(self.grid.grid.shape[0:2]) % 2, np.asarray([1, 1])))
-        local_grid = np.zeros((self.grid.grid.shape[0]*2+1, self.grid.grid.shape[1]*2+1), np.int8)
-        grid_size = np.array(self.grid.grid.shape[0:2], dtype=np.int8)
+    def get(self, grid, offset = (0,0), action = None):
+        assert(np.array_equal(np.asarray(grid.grid.shape[0:2]) % 2, np.asarray([1, 1])))
+        local_grid = np.zeros((grid.grid.shape[0]*2+1, grid.grid.shape[1]*2+1), np.int8)
+        grid_size = np.array(grid.grid.shape[0:2], dtype=np.int8)
         offset = np.roll(offset, 1)
         start = grid_size - offset
 
         assert(start[0] >= 0 and start[1] >= 0)
         end = start + grid_size
 
-        local_grid[start[0]:end[0],  start[1]:end[1]] = self.grid.grid
+        local_grid[start[0]:end[0],  start[1]:end[1]] = grid.grid
 
         if(action):
             local_grid = np.rot90(local_grid, -self.get_rotation(action))
@@ -36,11 +35,11 @@ class LocalView:
         self.prev_action = action
 
         # Set own head to free space color. We do not want to have our own head to have as strong effect:
-        local_grid[local_grid.shape[0] // 2, local_grid.shape[1] // 2] = self.grid.SPACE_COLOR
+        local_grid[local_grid.shape[0] // 2, local_grid.shape[1] // 2] = grid.SPACE_COLOR
 
         # plt.imshow(local_grid, interpolation='none')
         # plt.show()
-
+        local_grid = np.expand_dims(local_grid, -1)
         return local_grid
 
     def get_rotation(self, action):
@@ -52,7 +51,6 @@ class LocalAction:
     RIGHT = -1
     LEFT = 1
     def __init__(self):
-
         self.prev_action = Snake.DOWN
 
     def transform(self, local_action):
