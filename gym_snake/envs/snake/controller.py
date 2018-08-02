@@ -144,7 +144,8 @@ class Controller():
                 if self.snakes[i]:
                     obs.append(self.local_views[i].get(self.grid, self.snakes[i].head, direction))
                 elif self.dead_snakes[i]:
-                    obs.append(self.local_views[i].get(self.grid, self.dead_snakes[i].head, direction))
+                    if self.snakes_remaining == 1:
+                     obs.append(self.local_views[i].get(self.grid, self.dead_snakes[i].head, direction))
                 else:
                     raise Exception("Snakes inconsistent")
 

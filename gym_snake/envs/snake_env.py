@@ -15,7 +15,7 @@ except ImportError as e:
 class SnakeEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, grid_size=[15,15], unit_size=10, unit_gap=1, snake_size=1, n_snakes=1, n_foods=1, random_init=True, action_transformer=None):
+    def __init__(self, grid_size=[15,15], unit_size=10, unit_gap=1, snake_size=1, n_snakes=1, n_foods=1, random_init=True):
         self.grid_size = grid_size
         self.unit_size = unit_size
         self.unit_gap = unit_gap
@@ -29,7 +29,6 @@ class SnakeEnv(gym.Env):
         # self.observation_space = spaces.Box(low=-2, high=2,
         #     shape=([27*27]), dtype=np.int8)
         self.random_init = random_init
-        self.action_transformer = action_transformer
 
     def step(self, action):
         obs, rewards, done, info = self.controller.step(action)

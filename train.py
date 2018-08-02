@@ -29,7 +29,7 @@ def main():
     print("Model storage/load path: " + save_path)
 
     logger.configure()
-    env = gym_snake.envs.SnakeEnv(grid_size=[13, 13], unit_size=1, snake_size=4, unit_gap=0, action_transformer=LocalAction())
+    env = gym_snake.envs.SnakeEnv(grid_size=[13, 13], unit_size=1, snake_size=4, unit_gap=0, n_snakes=2, n_foods=4)
     model = deepq.models.cnn_to_mlp(
         convs=[(32, 8, 1), (64, 4, 1), (64, 3, 1)],
         hiddens=[256],

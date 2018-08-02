@@ -4,8 +4,8 @@ from gym_snake.envs.snake.snake import Snake
 import time
 import numpy as np
 
-n_snakes = 1
-env = gym_snake.envs.SnakeEnv(grid_size=[13, 13], unit_size=1, snake_size=2, unit_gap=0, n_foods=3, n_snakes=n_snakes, action_transformer=LocalAction())
+n_snakes = 2
+env = gym_snake.envs.SnakeEnv(grid_size=[13, 13], unit_size=1, snake_size=4, unit_gap=0, n_foods=3, n_snakes=n_snakes, action_transformer=LocalAction())
 while True:
     print("RESET")
     obs = env.reset()
