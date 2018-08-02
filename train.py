@@ -9,6 +9,8 @@ from gym_snake.envs.snake.view import LocalAction
 from gym_snake.envs.snake.snake import Snake
 
 import os
+import datetime
+import time
 
 def main():
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -17,6 +19,14 @@ def main():
     args = parser.parse_args()
 
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
+
+    ts = time.time()
+    ts_str = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
+    save_path = os.path.join('/home/pasa/deeplearning/tf_models/snake/', ts_str, args.gpu)
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+
+    print("Model storage/load path: " + save_path)
 
     logger.configure()
     env = gym_snake.envs.SnakeEnv(grid_size=[13, 13], unit_size=1, snake_size=4, unit_gap=0, action_transformer=LocalAction())
@@ -46,8 +56,8 @@ def main():
         gamma=0.99,
         prioritized_replay=False,
         prioritized_replay_alpha=0.6,
-        #checkpoint_freq=args.checkpoint_freq,
-        #checkpoint_path=args.checkpoint_path,
+        checkpoint_freq=100,
+        checkpoint_path=save_path,
         print_freq=10,
         #callback=callback
     )
