@@ -53,8 +53,6 @@ class Controller():
         """
 
         snake = self.snakes[snake_idx]
-        if type(snake) == type(None):
-            return
 
         # Cover old head position with body
         self.grid.cover(snake.head, self.grid.BODY_COLOR)
@@ -118,31 +116,37 @@ class Controller():
 
         # Ensure no more play until reset
         if self.snakes_remaining < 1 or self.grid.open_space < 1:
-            if len(directions) is 1:
+            if len(actions) is 1:
                 return self.grid.grid.copy(), 0, True, {"snakes_remaining":self.snakes_remaining}
             else:
-                return self.grid.grid.copy(), [0]*len(directions), True, {"snakes_remaining":self.snakes_remaining}
+                return self.grid.grid.copy(), [0]*len(actions), True, {"snakes_remaining":self.snakes_remaining}
 
         rewards = []
         #
-        # if type(directions) == type(int()):
-        #     directions = [directions]
+        try:
+            actions = np.asarray(actions).tolist()
+            len(actions)
+            assert (len(actions) == self.snakes_remaining)
+        except TypeError:
+            actions = [actions]
+            assert (1 == self.snakes_remaining)
 
-        directions = [actions]
+
 
         obs = []
-        lw = LocalView()
 
-        for i, direction in enumerate(directions):
-            self.move_snake(direction,i)
-            rewards.append(self.move_result(direction, i))
+        for i, snakes in enumerate(self.snakes):
+            if self.snakes[i] is not None:
+                direction = actions.pop(0)
+                self.move_snake(direction,i)
+                rewards.append(self.move_result(direction, i))
 
-            if self.snakes[i]:
-                obs.append(self.local_views[0].get(self.grid, self.snakes[i].head, direction))
-            elif self.dead_snakes[i]:
-                obs.append(self.local_views[0].get(self.grid, self.dead_snakes[i].head, direction))
-            else:
-                raise Exception("Snakes inconsistent")
+                if self.snakes[i]:
+                    obs.append(self.local_views[i].get(self.grid, self.snakes[i].head, direction))
+                elif self.dead_snakes[i]:
+                    obs.append(self.local_views[i].get(self.grid, self.dead_snakes[i].head, direction))
+                else:
+                    raise Exception("Snakes inconsistent")
 
             if self.snakes[i] is None:
                 if self.dead_snakes[i] is not None:
@@ -152,7 +156,7 @@ class Controller():
 
 
         assert(len(obs) > 0)
-        assert(len(obs) == len(directions))
+        assert(0 == len(actions))
 
         if len(rewards) is 1:
             return obs, rewards[0], done, {"snakes_remaining":self.snakes_remaining}
