@@ -32,7 +32,7 @@ def main():
         is_solved = lcl['t'] > 100 and sum(lcl['episode_rewards'][-101:-1]) / 100 >= 199
         return is_solved
 
-    deepq.learn(
+    act = deepq.learn(
         env,
         q_func=model,
         lr=1e-3,
@@ -52,7 +52,16 @@ def main():
         #callback=callback
     )
 
-    env.close()
+    while True:
+        obs, done = env.reset(), False
+        episode_rew = 0
+        while True:
+            env.render()
+            obs, rew, done, _ = env.step(act(obs[None])[0])
+            episode_rew += rew
+            if done:
+                break
+        print("Episode reward", episode_rew)
 
 
 if __name__ == '__main__':
