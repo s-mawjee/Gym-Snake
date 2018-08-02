@@ -1,6 +1,7 @@
 from gym_snake.envs.snake import Snake
 from gym_snake.envs.snake import Grid
 from gym_snake.envs.snake.view import LocalView
+from gym_snake.envs.snake.view import LocalAction
 import numpy as np
 import time
 
@@ -22,6 +23,8 @@ class Controller():
 
         self.snakes = []
         self.dead_snakes = []
+        self.local_views = []
+        self.local_actions = []
         for i in range(1,n_snakes+1):
             start_coord = [i*grid_size[0]//(n_snakes+1), snake_size+1]
             self.snakes.append(Snake(start_coord, snake_size))
@@ -29,6 +32,10 @@ class Controller():
             self.snakes[-1].head_color = color
             self.grid.draw_snake(self.snakes[-1], color)
             self.dead_snakes.append(None)
+
+            self.local_views.append(LocalView())
+            self.local_actions.append(LocalAction())
+
 
         if not random_init:
             for i in range(2,n_foods+2):
@@ -101,7 +108,7 @@ class Controller():
         self.dead_snakes[snake_idx] = None
         self.snakes_remaining -= 1
 
-    def step(self, directions):
+    def step(self, actions):
         """
         Takes an action for each snake in the specified direction and collects their rewards
         and dones.
@@ -121,7 +128,7 @@ class Controller():
         # if type(directions) == type(int()):
         #     directions = [directions]
 
-        directions = [directions]
+        directions = [actions]
 
         obs = []
         lw = LocalView()
@@ -131,13 +138,13 @@ class Controller():
             rewards.append(self.move_result(direction, i))
 
             if self.snakes[i]:
-                obs.append(lw.get(self.grid, self.snakes[i].head, direction))
+                obs.append(self.local_views[0].get(self.grid, self.snakes[i].head, direction))
             elif self.dead_snakes[i]:
-                obs.append(lw.get(self.grid, self.dead_snakes[i].head, direction))
+                obs.append(self.local_views[0].get(self.grid, self.dead_snakes[i].head, direction))
             else:
                 raise Exception("Snakes inconsistent")
 
-            if self.snakes[i] is None :
+            if self.snakes[i] is None:
                 if self.dead_snakes[i] is not None:
                     self.kill_snake(i)
 

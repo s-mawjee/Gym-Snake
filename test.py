@@ -3,7 +3,7 @@ from gym_snake.envs.snake.view import LocalAction
 from gym_snake.envs.snake.snake import Snake
 import time
 import numpy as np
-env = gym_snake.envs.SnakeEnv(grid_size=[13, 13], unit_size=1, snake_size=2, unit_gap=0, action_transformer=LocalAction())
+env = gym_snake.envs.SnakeEnv(grid_size=[13, 13], unit_size=1, snake_size=2, unit_gap=0, n_foods=3, action_transformer=LocalAction())
 while True:
     print("RESET")
     obs = env.reset()

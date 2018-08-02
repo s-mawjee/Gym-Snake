@@ -14,8 +14,7 @@ class BaseView:
 
 class LocalView:
     def __init__(self):
-        #super.__init__(BaseView, grid)
-        self.prev_action = Snake.DOWN
+        pass
 
     def get(self, grid, offset = (0,0), action = None):
         assert(np.array_equal(np.asarray(grid.grid.shape[0:2]) % 2, np.asarray([1, 1])))
@@ -29,22 +28,20 @@ class LocalView:
 
         local_grid[start[0]:end[0],  start[1]:end[1]] = grid.grid
 
-        if(action):
-            local_grid = np.rot90(local_grid, -self.get_rotation(action))
+        if action is not None:
+            # print("ROT:" + str(action))
+            local_grid = np.rot90(local_grid, action)
 
-        self.prev_action = action
 
         # Set own head to free space color. We do not want to have our own head to have as strong effect:
         local_grid[local_grid.shape[0] // 2, local_grid.shape[1] // 2] = grid.SPACE_COLOR
 
         # plt.imshow(local_grid, interpolation='none')
         # plt.show()
+
         local_grid = np.expand_dims(local_grid, -1)
         return local_grid
 
-    def get_rotation(self, action):
-        assert(np.abs(self.prev_action - action) != 2)
-        return -(self.prev_action - action)
 
 class LocalAction:
     FWD = 0
@@ -57,4 +54,8 @@ class LocalAction:
         assert(local_action == self.FWD or local_action == self.RIGHT or local_action == self.LEFT)
         action = (self.prev_action - local_action) % 4
         self.prev_action = action
+
+        # print("LA " + str(local_action))
+        # print("GA " + str(action))
+
         return action
