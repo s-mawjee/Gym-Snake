@@ -8,11 +8,16 @@ import gym_snake.envs.snake_env
 from gym_snake.envs.snake.view import LocalAction
 from gym_snake.envs.snake.snake import Snake
 
+import os
+
 def main():
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--gpu', type=str, default=None)
 
     args = parser.parse_args()
+
+    os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
+
     logger.configure()
     env = gym_snake.envs.SnakeEnv(grid_size=[13, 13], unit_size=1, snake_size=4, unit_gap=0, action_transformer=LocalAction())
     model = deepq.models.cnn_to_mlp(
