@@ -32,8 +32,6 @@ class SnakeEnv(gym.Env):
         self.action_transformer = action_transformer
 
     def step(self, action):
-        if self.action_transformer:
-            action = self.action_transformer.transform(action-1)
         self.last_obs, rewards, done, info = self.controller.step(action)
         # print("STEP")
         # print(np.moveaxis(np.asarray(self.last_obs), 0, -1).shape)

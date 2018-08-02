@@ -131,13 +131,13 @@ class Controller():
             actions = [actions]
             assert (1 == self.snakes_remaining)
 
-
-
         obs = []
 
         for i, snakes in enumerate(self.snakes):
             if self.snakes[i] is not None:
                 direction = actions.pop(0)
+                direction = self.local_actions[i].transform(direction - 1)
+
                 self.move_snake(direction,i)
                 rewards.append(self.move_result(direction, i))
 
