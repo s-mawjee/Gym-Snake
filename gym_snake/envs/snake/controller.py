@@ -158,7 +158,4 @@ class Controller():
         assert(len(obs) > 0)
         assert(0 == len(actions))
 
-        if len(rewards) is 1:
-            return obs, rewards[0], done, {"snakes_remaining":self.snakes_remaining}
-        else:
-            return obs, rewards, done, {"snakes_remaining":self.snakes_remaining}
+        return obs, rewards, done, {"snakes_remaining":self.snakes_remaining}
