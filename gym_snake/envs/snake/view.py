@@ -29,15 +29,15 @@ class LocalView:
         local_grid[start[0]:end[0],  start[1]:end[1]] = grid.grid
 
         if action is not None:
-            print("ROT:" + str(action))
+            #print("ROT:" + str(action))
             local_grid = np.rot90(local_grid, action)
 
 
         # Set own head to free space color. We do not want to have our own head to have as strong effect:
         local_grid[local_grid.shape[0] // 2, local_grid.shape[1] // 2] = grid.SPACE_COLOR
-
-        plt.imshow(local_grid, interpolation='none')
-        plt.show()
+        #
+        # plt.imshow(local_grid, interpolation='none')
+        # plt.show()
 
         local_grid = np.expand_dims(local_grid, -1)
         return local_grid
