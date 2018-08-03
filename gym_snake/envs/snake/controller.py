@@ -153,7 +153,7 @@ class Controller():
                 if self.dead_snakes[i] is not None:
                     self.kill_snake(i)
 
-        done = self.snakes_remaining < 1 or self.grid.open_space < 1
+        done = self.snakes_remaining <= 1 or self.grid.open_space < 1
 
 
         assert(len(obs) > 0)
