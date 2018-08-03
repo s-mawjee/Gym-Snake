@@ -67,11 +67,12 @@ def main():
         episode_rew = 0
         while True:
             env.render()
-            obs, rew, done, _ = env.step(act(obs[None])[0])
-            episode_rew += rew
+            obs, rew, done, _ = env.step(act(obs))
+            episode_rew += sum(rew)
             if done:
+                print(episode_rew)
                 break
-        print("Episode reward", episode_rew)
+
 
 
 if __name__ == '__main__':
