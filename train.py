@@ -22,7 +22,8 @@ def main():
 
     ts = time.time()
     ts_str = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
-    save_path = os.path.join('/home/pasa/deeplearning/tf_models/snake/', ts_str, args.gpu)
+    ts_str = "2018-08-03_19-47-58-2"
+    save_path = os.path.join('/home/pasa/deeplearning/tf_models/snake/', ts_str)
     if not os.path.exists(save_path):
         os.makedirs(save_path)
 
@@ -31,9 +32,9 @@ def main():
     logger.configure()
     env = gym_snake.envs.SnakeEnv(grid_size=[13, 13], unit_size=1, snake_size=4, unit_gap=0, n_snakes=2, n_foods=4)
     model = deepq.models.cnn_to_mlp(
-        convs=[(32, 8, 1), (64, 4, 1), (64, 3, 1)],
-        hiddens=[256],
-        dueling=False,
+        convs=[(32, 5, 1), (64, 3, 1), (64, 3, 1)],
+        hiddens=[512, 256],
+        dueling=True,
     )
 
     def callback(lcl, _glb):
@@ -45,7 +46,7 @@ def main():
     act = deepq.learn(
         env,
         q_func=model,
-        lr=1e-3,
+        lr=1e-6,
         max_timesteps=100000,
         buffer_size=10000,
         exploration_fraction=0.1,
@@ -53,13 +54,13 @@ def main():
         #train_freq=4,
         #learning_starts=5,
         target_network_update_freq=1000,
-        gamma=0.99,
+        gamma=1,
         prioritized_replay=False,
         prioritized_replay_alpha=0.6,
         checkpoint_freq=100,
         checkpoint_path=save_path,
         print_freq=10,
-        #callback=callback
+        only_load=False
     )
 
     while True:
