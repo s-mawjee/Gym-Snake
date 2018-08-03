@@ -22,7 +22,7 @@ def main():
 
     ts = time.time()
     ts_str = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
-    ts_str = "2018-08-03_19-47-58-2"
+    ts_str = "2018-08-03_19-47-58"
     save_path = os.path.join('/home/pasa/deeplearning/tf_models/snake/', ts_str)
     if not os.path.exists(save_path):
         os.makedirs(save_path)
@@ -55,7 +55,7 @@ def main():
         #learning_starts=5,
         target_network_update_freq=1000,
         gamma=1,
-        prioritized_replay=False,
+        prioritized_replay=True,
         prioritized_replay_alpha=0.6,
         checkpoint_freq=100,
         checkpoint_path=save_path,
