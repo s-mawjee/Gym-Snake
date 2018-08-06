@@ -15,7 +15,7 @@ except ImportError as e:
 class SnakeEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, grid_size=[15,15], unit_size=10, unit_gap=1, snake_size=1, n_snakes=1, n_foods=1, random_init=True):
+    def __init__(self, grid_size=[13,13], unit_size=10, unit_gap=1, snake_size=1, n_snakes=1, n_foods=1, random_init=True):
         self.grid_size = grid_size
         self.unit_size = unit_size
         self.unit_gap = unit_gap
@@ -30,13 +30,17 @@ class SnakeEnv(gym.Env):
         #     shape=([27*27]), dtype=np.int8)
         self.random_init = random_init
 
+        self.num_envs = n_snakes
+
     def step(self, action):
-        obs, rewards, done, info = self.controller.step(action)
-        # print("STEP")
+        obs, rewards, done, _ = self.controller.step(action)
+        #print("STEP")
         # print(np.moveaxis(np.asarray(self.last_obs), 0, -1).shape)
         # print(str(rewards))
         # print(str(done))
-        # print(str(info))
+        # print(rewards)
+        info = [{"episode": {"l": 0, "r": np.mean(rewards)}}]
+        # self.render()
         return obs, rewards, done, info
 
     def reset(self):
@@ -47,7 +51,6 @@ class SnakeEnv(gym.Env):
         for snakes in self.controller.snakes:
             lw = LocalView()
             obs.append(lw.get(self.controller.grid, self.controller.snakes[0].head))
-        # print("RESET")
         return  np.asarray(obs)
 
     def render(self, mode='human', close=False):

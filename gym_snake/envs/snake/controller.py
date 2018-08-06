@@ -23,6 +23,7 @@ class Controller():
 
         self.snakes = []
         self.dead_snakes = []
+        self.erased_snakes = []
         self.local_views = []
         self.local_actions = []
         for i in range(1,n_snakes+1):
@@ -32,6 +33,7 @@ class Controller():
             self.snakes[-1].head_color = color
             self.grid.draw_snake(self.snakes[-1], color)
             self.dead_snakes.append(None)
+            self.erased_snakes.append(None)
 
             self.local_views.append(LocalView())
             self.local_actions.append(LocalAction())
@@ -103,6 +105,7 @@ class Controller():
         assert self.dead_snakes[snake_idx] is not None
         self.grid.erase(self.dead_snakes[snake_idx].head)
         self.grid.erase_snake_body(self.dead_snakes[snake_idx])
+        self.erased_snakes[snake_idx] = self.dead_snakes[snake_idx]
         self.dead_snakes[snake_idx] = None
         self.snakes_remaining -= 1
 
@@ -113,50 +116,58 @@ class Controller():
 
         directions - tuple, list, or ndarray of directions corresponding to each snake.
         """
-
+        assert(len(actions) == len(self.snakes))
         # Ensure no more play until reset
-        if self.snakes_remaining < 1 or self.grid.open_space < 1:
-            if len(actions) is 1:
-                return self.grid.grid.copy(), 0, True, {"snakes_remaining":self.snakes_remaining}
-            else:
-                return self.grid.grid.copy(), [0]*len(actions), True, {"snakes_remaining":self.snakes_remaining}
+        # if self.snakes_remaining < 1 or self.grid.open_space < 1:
+        #     if len(actions) is 1:
+        #         return self.grid.grid.copy(), 0, True, {"snakes_remaining":self.snakes_remaining}
+        #     else:
+        #         return self.grid.grid.copy(), [0]*len(actions), True, {"snakes_remaining":self.snakes_remaining}
 
         rewards = []
         #
         try:
             actions = np.asarray(actions).tolist()
             len(actions)
-            assert (len(actions) == self.snakes_remaining)
+            assert (len(actions) == len(self.snakes))
         except TypeError:
             actions = [actions]
             assert (1 == self.snakes_remaining)
 
         obs = []
+        dones = []
 
         for i, snakes in enumerate(self.snakes):
+            direction = actions[i]
+            direction = self.local_actions[i].transform(direction - 1)
             if self.snakes[i] is not None:
-                direction = actions.pop(0)
-                direction = self.local_actions[i].transform(direction - 1)
+
 
                 self.move_snake(direction,i)
                 rewards.append(self.move_result(direction, i))
 
                 if self.snakes[i]:
                     obs.append(self.local_views[i].get(self.grid, self.snakes[i].head, direction))
-                elif self.dead_snakes[i]:
-                    if self.snakes_remaining == 1:
-                     obs.append(self.local_views[i].get(self.grid, self.dead_snakes[i].head, direction))
-                else:
-                    raise Exception("Snakes inconsistent")
+                    dones.append(False)
 
             if self.snakes[i] is None:
                 if self.dead_snakes[i] is not None:
                     self.kill_snake(i)
 
-        done = self.snakes_remaining <= 1 or self.grid.open_space < 1
+                if self.dead_snakes[i] is not None or self.erased_snakes[i] is not None:
+                    obs.append(self.local_views[i].get_zero(self.grid))
+                    dones.append(True)
+            if len(rewards) == 0:
+                rewards.append(0)
 
 
-        assert(len(obs) > 0)
-        assert(0 == len(actions))
+        #done = self.snakes_remaining <= 1 or self.grid.open_space < 1
 
-        return obs, rewards, done, {"snakes_remaining":self.snakes_remaining}
+
+        assert(len(obs) == len(self.snakes))
+        assert(len(dones) == len(self.snakes))
+
+        assert(np.asarray(obs).shape == (1, 27, 27, 1))
+        #print("CTRL: " + str(obs))
+
+        return obs, rewards, np.asarray(dones), {"snakes_remaining":self.snakes_remaining}
