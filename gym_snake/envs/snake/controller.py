@@ -17,6 +17,8 @@ class Controller():
         assert snake_size < grid_size[1]//2
         assert unit_gap >= 0 and unit_gap < unit_size
 
+        self.done = False
+
         self.n_snakes = n_snakes
         self.snakes_remaining = n_snakes
         self.grid = Grid(grid_size, unit_size, unit_gap)
@@ -168,6 +170,12 @@ class Controller():
                 self.local_actions[i].reset()
                 dones.append(True)
 
+        if self.done:
+            rewards = [0]
+            dones = [True]
+
+        if dones[0]:
+            self.done = True
 
         #print(dones)
         #print("*******************")
