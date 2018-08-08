@@ -140,26 +140,37 @@ class Controller():
         for i, snakes in enumerate(self.snakes):
             direction = actions[i]
             direction = self.local_actions[i].transform(direction - 1)
-            if self.snakes[i] is not None:
 
-
-                self.move_snake(direction,i)
-                rewards.append(self.move_result(direction, i))
-
-                if self.snakes[i]:
-                    obs.append(self.local_views[i].get(self.grid, self.snakes[i].head, direction))
-                    dones.append(False)
+            self.move_snake(direction,i)
+            rewards.append(self.move_result(direction, i))
+            #print(rewards)
+            if self.snakes[i]:
+                #print("ALIVE")
+                obs.append(self.local_views[i].get(self.grid, self.snakes[i].head, direction))
+                dones.append(False)
 
             if self.snakes[i] is None:
+                #print("DEAD")
                 if self.dead_snakes[i] is not None:
                     self.kill_snake(i)
 
-                if self.dead_snakes[i] is not None or self.erased_snakes[i] is not None:
-                    obs.append(self.local_views[i].get_zero(self.grid))
-                    dones.append(True)
-            if len(rewards) == 0:
-                rewards.append(0)
+                coord_not_found = True
+                while coord_not_found:
+                    coord = (np.random.randint(0, self.grid.grid_size[0]), np.random.randint(0, self.grid.grid_size[1]))
+                    if np.array_equal(self.grid.color_of(coord), self.grid.SPACE_COLOR):
+                        coord_not_found = False
 
+                self.snakes[i] = Snake(coord, 2)
+                color = self.grid.HEAD_COLOR
+                self.snakes[i].head_color = color
+                self.grid.draw_snake(self.snakes[i], color)
+                obs.append(self.local_views[i].get(self.grid, self.snakes[i].head, direction))
+                self.local_actions[i].reset()
+                dones.append(True)
+
+
+        #print(dones)
+        #print("*******************")
 
         #done = self.snakes_remaining <= 1 or self.grid.open_space < 1
 
@@ -167,7 +178,6 @@ class Controller():
         assert(len(obs) == len(self.snakes))
         assert(len(dones) == len(self.snakes))
 
-        assert(np.asarray(obs).shape == (1, 27, 27, 1))
         #print("CTRL: " + str(obs))
 
         return obs, rewards, np.asarray(dones), {"snakes_remaining":self.snakes_remaining}

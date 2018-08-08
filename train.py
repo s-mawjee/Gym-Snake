@@ -24,21 +24,21 @@ def main():
 
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
 
-    ts = time.time()
-    ts_str = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
-    save_path = os.path.join('/home/pasa/deeplearning/tf_models/snake/', ts_str)
-    if not os.path.exists(save_path):
-        os.makedirs(save_path)
-
-    print("Model storage/load path: " + save_path)
-
-    logger.configure()
-    env = gym_snake.envs.SnakeEnv(grid_size=[13, 13], unit_size=1, snake_size=5, unit_gap=0, n_snakes=1, n_foods=4)
-    model = deepq.models.cnn_to_mlp(
-        convs=[(32, 5, 1), (64, 3, 1), (64, 3, 1)],
-        hiddens=[512, 256],
-        dueling=True,
-    )
+    # ts = time.time()
+    # ts_str = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
+    # save_path = os.path.join('/home/pasa/deeplearning/tf_models/snake/', ts_str)
+    # if not os.path.exists(save_path):
+    #     os.makedirs(save_path)
+    #
+    # print("Model storage/load path: " + save_path)
+    #
+    # logger.configure()
+    env = gym_snake.envs.SnakeEnv(grid_size=[19, 19], unit_size=1, snake_size=2, unit_gap=0, n_snakes=1, n_foods=40)
+    # model = deepq.models.cnn_to_mlp(
+    #     convs=[(32, 5, 1), (64, 3, 1), (64, 3, 1)],
+    #     hiddens=[512, 256],
+    #     dueling=True,
+    # )
 
     # def callback(lcl, _glb):
     #     # stop training if reward exceeds 199
@@ -69,14 +69,14 @@ def main():
 
     num_timesteps = 1000000
     policy =  CnnPolicy
-    model = ppo2.learn(policy=policy, env=env, nsteps=2048, nminibatches=4,
-        lam=0.95, gamma=1, noptepochs=4, log_interval=10,
+    model = ppo2.learn(policy=policy, env=env, nsteps=256, nminibatches=4,
+        lam=1, gamma=1, noptepochs=4, log_interval=10,
         ent_coef=.01,
-        lr=lambda f : f * 2.5e-3,
-        cliprange=lambda f : f * 0.1,
+        lr=lambda f : f * 2.5e-4,
+        cliprange=lambda f : f * 0.3,
         total_timesteps=int(num_timesteps * 1.1),
         save_interval=50)
-        #load_path="/tmp/openai-2018-08-06-19-09-09-397634/checkpoints/01100")
+        #load_path="/tmp/openai-2018-08-08-01-55-50-649928/checkpoints/00450")
 
 
 

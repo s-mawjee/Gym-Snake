@@ -5,18 +5,20 @@ import time
 import numpy as np
 
 n_snakes = 1
-env = gym_snake.envs.SnakeEnv(grid_size=[13, 13], unit_size=1, snake_size=2, unit_gap=0, n_foods=3, n_snakes=n_snakes)
+env = gym_snake.envs.SnakeEnv(grid_size=[13, 13], unit_size=1, snake_size=4, unit_gap=0, n_foods=6, n_snakes=n_snakes)
 while True:
     obs = env.reset()
-    assert (np.asarray(obs).shape == (n_snakes, 27, 27, 1))
+    action = [LocalAction.FWD + 1] * n_snakes
+    obs, rewards, done, info = env.step(action)
+    action = [LocalAction.RIGHT + 1] * n_snakes
+    obs, rewards, done, info = env.step(action)
+    action = [LocalAction.FWD + 1] * n_snakes
+    obs, rewards, done, info = env.step(action)
     while True:
-        action = [LocalAction.RIGHT+1]*n_snakes
+        action = [LocalAction.FWD+1]*n_snakes
         obs, rewards, done, info = env.step(action)
         print(np.asarray(obs).shape)
-        assert(np.asarray(obs).shape == (n_snakes, 27, 27, 1))
         #env.render()
-        if done:
-            break
         # obs, rewards, done, info = env.step(LocalAction.RIGHT+1)
         # if done:
         #     break

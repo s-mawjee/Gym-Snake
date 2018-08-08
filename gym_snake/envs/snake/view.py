@@ -7,7 +7,6 @@ import time
 class BaseView:
     def __init__(self, grid):
         self.grid = grid
-        self.prev_action = Snake.DOWN
 
     def get(self, action, snake_id):
         return grid
@@ -35,11 +34,12 @@ class LocalView:
             local_grid = np.rot90(local_grid, action)
 
 
+
         # Set own head to free space color. We do not want to have our own head to have as strong effect:
         local_grid[local_grid.shape[0] // 2, local_grid.shape[1] // 2] = grid.SPACE_COLOR
         #
-        # plt.imshow(local_grid, interpolation='none')
-        # plt.show()
+        plt.imshow(local_grid, interpolation='none')
+        plt.show()
 
         local_grid = np.expand_dims(local_grid, -1)
         return local_grid
@@ -50,7 +50,7 @@ class LocalAction:
     RIGHT = -1
     LEFT = 1
     def __init__(self):
-        self.prev_action = Snake.DOWN
+        self.prev_action = Snake.UP
 
     def transform(self, local_action):
         assert(local_action == self.FWD or local_action == self.RIGHT or local_action == self.LEFT)
@@ -61,3 +61,6 @@ class LocalAction:
         # print("GA " + str(action))
 
         return action
+
+    def reset(self):
+        self.prev_action = Snake.UP
