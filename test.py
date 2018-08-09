@@ -10,15 +10,21 @@ while True:
     obs = env.reset()
     action = [LocalAction.FWD + 1] * n_snakes
     obs, rewards, done, info = env.step(action)
+    # env.render()
     action = [LocalAction.RIGHT + 1] * n_snakes
     obs, rewards, done, info = env.step(action)
+    # env.render()
     action = [LocalAction.FWD + 1] * n_snakes
     obs, rewards, done, info = env.step(action)
+    # env.render()
     while True:
         action = [LocalAction.FWD+1]*n_snakes
         obs, rewards, done, info = env.step(action)
-        print(np.asarray(obs).shape)
-        #env.render()
+        # env.render()
+        if done:
+            time.sleep(2)
+            break
+
         # obs, rewards, done, info = env.step(LocalAction.RIGHT+1)
         # if done:
         #     break

@@ -33,7 +33,7 @@ def main():
     # print("Model storage/load path: " + save_path)
     #
     # logger.configure()
-    env = gym_snake.envs.SnakeEnv(grid_size=[11, 11], unit_size=1, snake_size=2, unit_gap=0, n_snakes=1, n_foods=13)
+    env = gym_snake.envs.SnakeEnv(grid_size=[11, 11], unit_size=1, snake_size=2, unit_gap=0, n_snakes=1, n_foods=12)
     # model = deepq.models.cnn_to_mlp(
     #     convs=[(32, 5, 1), (64, 3, 1), (64, 3, 1)],
     #     hiddens=[512, 256],
@@ -69,8 +69,8 @@ def main():
 
     num_timesteps = 1000000
     policy =  CnnPolicy
-    model = ppo2.learn(policy=policy, env=env, nsteps=64, nminibatches=4,
-        lam=1, gamma=1, noptepochs=4, log_interval=10,
+    model = ppo2.learn(policy=policy, env=env, nsteps=512, nminibatches=1,
+        noptepochs=4, log_interval=10,
         ent_coef=.01,
         lr=lambda f : f * 2.5e-4,
         cliprange=lambda f : f * 0.3,
@@ -84,8 +84,10 @@ def main():
     obs[:] = env.reset()
     while True:
         actions = model.step(obs)[0]
-        obs[:]  = env.step(actions)[0]
+        obs[:], rewards, done, info = env.step(actions)
         env.render()
+        if done[0]:
+            env.reset()
 
 
 if __name__ == '__main__':

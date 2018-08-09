@@ -30,8 +30,9 @@ class LocalView:
         local_grid[start[0]:end[0],  start[1]:end[1]] = grid.grid
 
         if action is not None:
+            pass
             #print("ROT:" + str(action))
-            local_grid = np.rot90(local_grid, action)
+            #local_grid = np.rot90(local_grid, action)
 
 
 
