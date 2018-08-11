@@ -37,7 +37,7 @@ class LocalView:
 
 
         # Set own head to free space color. We do not want to have our own head to have as strong effect:
-        #local_grid[local_grid.shape[0] // 2, local_grid.shape[1] // 2] = grid.SPACE_COLOR
+        local_grid[local_grid.shape[0] // 2, local_grid.shape[1] // 2] = grid.OWN_HEAD_COLOR
         #
         # plt.imshow(local_grid, interpolation='none')
         # plt.show()

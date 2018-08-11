@@ -4,6 +4,7 @@ from gym_snake.envs.snake.view import LocalView
 from gym_snake.envs.snake.view import LocalAction
 import numpy as np
 import time
+import matplotlib.pyplot as plt
 
 class Controller():
     """
@@ -175,6 +176,8 @@ class Controller():
                     # obs.append(self.local_views[i].get(self.grid, self.snakes[i].head, direction))
                     # self.local_actions[i].reset()
                     dones.append(True)
+                    # plt.imshow(np.squeeze(obs[i]), interpolation='none')
+                    # plt.show()
             else:
                 obs.append(self.local_views[i].get_zero(self.grid))
                 dones.append(True)
