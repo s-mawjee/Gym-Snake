@@ -24,16 +24,16 @@ def main():
 
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
 
-    # ts = time.time()
-    # ts_str = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
-    # save_path = os.path.join('/home/pasa/deeplearning/tf_models/snake/', ts_str)
-    # if not os.path.exists(save_path):
-    #     os.makedirs(save_path)
-    #
-    # print("Model storage/load path: " + save_path)
-    #
-    # logger.configure()
-    env = gym_snake.envs.SnakeEnv(grid_size=[11, 11], unit_size=1, snake_size=2, unit_gap=0, n_snakes=1, n_foods=12)
+    ts = time.time()
+    ts_str = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
+    save_path = os.path.join('/home/pasa/deeplearning/tf_models/snake/', ts_str)
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+
+    print("Model storage/load path: " + save_path)
+
+    logger.configure(save_path, format_strs=['stdout','log','csv','tensorboard'])
+    env = gym_snake.envs.SnakeEnv(grid_size=[21, 21], unit_size=1, snake_size=4, unit_gap=0, n_snakes=4, n_foods=12)
     # model = deepq.models.cnn_to_mlp(
     #     convs=[(32, 5, 1), (64, 3, 1), (64, 3, 1)],
     #     hiddens=[512, 256],
@@ -67,16 +67,16 @@ def main():
     # )
     tf.Session().__enter__()
 
-    num_timesteps = 1000000
+    num_timesteps = 200
     policy =  CnnPolicy
-    model = ppo2.learn(policy=policy, env=env, nsteps=512, nminibatches=1,
+    model = ppo2.learn(policy=policy, env=env, nsteps=1024, nminibatches=8,
         noptepochs=4, log_interval=10,
         ent_coef=.01,
-        lr=lambda f : f * 2.5e-4,
+        lr=lambda f : f * 2.5e-5,
         cliprange=lambda f : f * 0.3,
         total_timesteps=int(num_timesteps * 1.1),
-        save_interval=50)
-        #load_path="/tmp/openai-2018-08-08-01-55-50-649928/checkpoints/00450")
+        save_interval=50,
+        #load_path="/home/pasa/deeplearning/tf_models/snake/2018-08-11_20-12-32/checkpoints/00120")
 
 
 

@@ -118,6 +118,9 @@ class Controller():
 
         directions - tuple, list, or ndarray of directions corresponding to each snake.
         """
+        if len(actions) != len(self.snakes):
+            print(len(actions))
+            print(len(self.snakes))
         assert(len(actions) == len(self.snakes))
         # Ensure no more play until reset
         # if self.snakes_remaining < 1 or self.grid.open_space < 1:
@@ -140,37 +143,43 @@ class Controller():
         dones = []
 
         for i, snakes in enumerate(self.snakes):
-            direction = actions[i]
-            direction = self.local_actions[i].transform(direction - 1)
+            if self.snakes[i] is not None:
+                direction = actions[i]
+                direction = self.local_actions[i].transform(direction - 1)
 
-            self.move_snake(direction,i)
-            obs.append(self.local_views[i].get(self.grid, self.snakes[i].head, direction))
-            rewards.append(self.move_result(direction, i))
-            #print("direction: " + str(direction))
-            #print(rewards)
-            if self.snakes[i]:
-                #print("ALIVE")
+                self.move_snake(direction,i)
+                obs.append(self.local_views[i].get(self.grid, self.snakes[i].head, direction))
+                rewards.append(self.move_result(direction, i))
+                #print("direction: " + str(direction))
+                #print(rewards)
+                if self.snakes[i] is not None:
+                    #print("ALIVE")
 
-                dones.append(False)
+                    dones.append(False)
 
-            if self.snakes[i] is None:
-                #print("DEAD")
-                if self.dead_snakes[i] is not None:
-                    self.kill_snake(i)
+                if self.snakes[i] is None:
+                    #print("DEAD")
+                    if self.dead_snakes[i] is not None:
+                        self.kill_snake(i)
 
-                # coord_not_found = True
-                # while coord_not_found:
-                #     coord = (np.random.randint(0, self.grid.grid_size[0]), np.random.randint(0, self.grid.grid_size[1]))
-                #     if np.array_equal(self.grid.color_of(coord), self.grid.SPACE_COLOR):
-                #         coord_not_found = False
-                #
-                # self.snakes[i] = Snake(coord, 2)
-                # color = self.grid.HEAD_COLOR
-                # self.snakes[i].head_color = color
-                # self.grid.draw_snake(self.snakes[i], color)
-                # obs.append(self.local_views[i].get(self.grid, self.snakes[i].head, direction))
-                # self.local_actions[i].reset()
+                    # coord_not_found = True
+                    # while coord_not_found:
+                    #     coord = (np.random.randint(0, self.grid.grid_size[0]), np.random.randint(0, self.grid.grid_size[1]))
+                    #     if np.array_equal(self.grid.color_of(coord), self.grid.SPACE_COLOR):
+                    #         coord_not_found = False
+                    #
+                    # self.snakes[i] = Snake(coord, 2)
+                    # color = self.grid.HEAD_COLOR
+                    # self.snakes[i].head_color = color
+                    # self.grid.draw_snake(self.snakes[i], color)
+                    # obs.append(self.local_views[i].get(self.grid, self.snakes[i].head, direction))
+                    # self.local_actions[i].reset()
+                    dones.append(True)
+            else:
+                obs.append(self.local_views[i].get_zero(self.grid))
                 dones.append(True)
+                rewards.append(0)
+
 
         # if self.done:
         #     rewards = [0]

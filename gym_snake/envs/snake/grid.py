@@ -226,7 +226,7 @@ class Grid():
         Returns true if space left. Otherwise returns false.
         """
 
-        if self.open_space < 1:
+        if self.open_space <= 1:
             return False
         coord_not_found = True
         while(coord_not_found):

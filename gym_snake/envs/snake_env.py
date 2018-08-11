@@ -39,7 +39,7 @@ class SnakeEnv(gym.Env):
         # print(str(rewards))
         # print(str(done))
         # print(rewards)
-        info = [{"episode": {"l": 0, "r": np.mean(rewards)}}]
+        info = [{"episode": {"l": 0, "r": np.sum(rewards)}}]
         # self.render()
         return obs, rewards, done, info
 

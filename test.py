@@ -4,7 +4,7 @@ from gym_snake.envs.snake.snake import Snake
 import time
 import numpy as np
 
-n_snakes = 1
+n_snakes = 2
 env = gym_snake.envs.SnakeEnv(grid_size=[13, 13], unit_size=1, snake_size=4, unit_gap=0, n_foods=6, n_snakes=n_snakes)
 while True:
     obs = env.reset()
@@ -20,8 +20,8 @@ while True:
     while True:
         action = [LocalAction.FWD+1]*n_snakes
         obs, rewards, done, info = env.step(action)
-        # env.render()
-        if done:
+        env.render()
+        if all(done):
             time.sleep(2)
             break
 
