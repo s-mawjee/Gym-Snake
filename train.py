@@ -86,7 +86,7 @@ def main():
         actions = model.step(obs)[0]
         obs[:], rewards, done, info = env.step(actions)
         env.render()
-        if done[0]:
+        if all(done):
             env.reset()
 
 
