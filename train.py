@@ -67,16 +67,16 @@ def main():
     # )
     tf.Session().__enter__()
 
-    num_timesteps = 5000000
+    num_timesteps = 10000000
     policy =  CnnPolicy
-    model = ppo2.learn(policy=policy, env=env, nsteps=2048, nminibatches=8,
-        noptepochs=4, log_interval=10,
+    model = ppo2.learn(policy=policy, env=env, nsteps=2048, nminibatches=4,
+        noptepochs=2, log_interval=10,
         ent_coef=.01,
-        lr=lambda f : f * 2.5e-5,
+        lr=lambda f : f * 5e-4,
         cliprange=lambda f : f * 0.3,
         total_timesteps=int(num_timesteps * 1.1),
         save_interval=50)
-        # load_path="/home/pasa/deeplearning/tf_models/snake/2018-08-11_20-12-32/checkpoints/00120")
+        #load_path="/home/pasa/deeplearning/tf_models/snake/2018-08-14_13-55-06/checkpoints/00400")
 
 
 
