@@ -16,7 +16,14 @@ import time
 import tensorflow as tf
 import numpy as np
 
+from gym_snake.envs.snake.heatmap import HeatMap
+
+
+
+
+
 def main():
+
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--gpu', type=str, default=None)
 
@@ -82,10 +89,20 @@ def main():
 
     obs = np.zeros((env.num_envs,) + env.observation_space.shape)
     obs[:] = env.reset()
+    heatmap = HeatMap(env.grid_size, env.n_snakes)
     while True:
         actions = model.step(obs)[0]
         obs[:], rewards, done, info = env.step(actions)
-        env.render()
+        #env.render()
+
+        for i, snake in enumerate(env.controller.snakes):
+            if snake is not None:
+                print(snake.head)
+                heatmap.visit(snake.head, i)
+
+        print(heatmap.hmps[0])
+        heatmap.plot(0)
+
         if all(done):
             env.reset()
 
