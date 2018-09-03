@@ -40,7 +40,7 @@ def main():
     print("Model storage/load path: " + save_path)
 
     logger.configure(save_path, format_strs=['stdout','log','csv','tensorboard'])
-    env = gym_snake.envs.SnakeEnv(grid_size=[25, 25], unit_size=1, snake_size=4, unit_gap=0, n_snakes=3, n_foods=9)
+    env = gym_snake.envs.SnakeEnv(grid_size=[15, 15], unit_size=1, snake_size=4, unit_gap=0, n_snakes=3, n_foods=2)
     # model = deepq.models.cnn_to_mlp(
     #     convs=[(32, 5, 1), (64, 3, 1), (64, 3, 1)],
     #     hiddens=[512, 256],
@@ -74,7 +74,7 @@ def main():
     # )
     tf.Session().__enter__()
 
-    num_timesteps = 2e6
+    num_timesteps = 4
     policy =  CnnPolicy
     model = ppo2.learn(policy=policy, env=env, nsteps=2048, nminibatches=4,
         noptepochs=2, log_interval=10,
@@ -82,8 +82,8 @@ def main():
         lr=lambda f : f * 1e-4,
         cliprange=lambda f : f * 0.3,
         total_timesteps=int(num_timesteps * 1.1),
-        save_interval=50)
-        #load_path="/home/pasa/deeplearning/tf_models/snake/2018-08-14_13-55-06/checkpoints/00400")
+        save_interval=50,
+        load_path="/home/pasa/deeplearning/tf_models/snake/2018-09-03_21-02-39/checkpoints/00350")
 
 
 
