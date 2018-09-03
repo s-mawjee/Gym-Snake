@@ -9,7 +9,6 @@ class HeatMap:
             self.hmps.append(np.ones(gridsize, dtype=np.double))
 
     def visit(self, cords, id):
-        print(self.hmps[id][cords[0]][cords[1]])
         self.hmps[id][cords[0]][cords[1]] += 1
 
     def plot(self, id):

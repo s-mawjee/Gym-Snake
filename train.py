@@ -97,10 +97,8 @@ def main():
 
         for i, snake in enumerate(env.controller.snakes):
             if snake is not None:
-                print(snake.head)
                 heatmap.visit(snake.head, i)
 
-        print(heatmap.hmps[0])
         heatmap.plot(0)
 
         if all(done):
