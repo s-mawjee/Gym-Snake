@@ -88,8 +88,7 @@ def main():
         lr=lambda f : f * 1e-5,
         cliprange=lambda f : f * 0.3,
         total_timesteps=int(num_timesteps * 1.1),
-        save_interval=50,
-        load_path="/home/pasa/deeplearning/tf_models/snake/2018-09-03_21-02-39/checkpoints/00350")
+        save_interval=50)
 
 
 
