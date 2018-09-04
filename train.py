@@ -41,7 +41,7 @@ def main():
 
     logger.configure(save_path, format_strs=['stdout','log','csv','tensorboard'])
 
-    env = gym_snake.envs.SnakeEnv(grid_size=[25, 25], unit_size=1, snake_size=4, unit_gap=0, n_snakes=3, n_foods=9)
+    env = gym_snake.envs.SnakeEnv(grid_size=[15, 15], unit_size=1, snake_size=4, unit_gap=0, n_snakes=3, n_foods=9)
 
     heatmap = HeatMap(env.grid_size, env.n_snakes)
 
