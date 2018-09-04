@@ -40,7 +40,11 @@ def main():
     print("Model storage/load path: " + save_path)
 
     logger.configure(save_path, format_strs=['stdout','log','csv','tensorboard'])
-    env = gym_snake.envs.SnakeEnv(grid_size=[15, 15], unit_size=1, snake_size=4, unit_gap=0, n_snakes=3, n_foods=2)
+
+    env = gym_snake.envs.SnakeEnv(grid_size=[25, 25], unit_size=1, snake_size=4, unit_gap=0, n_snakes=3, n_foods=9)
+
+    heatmap = HeatMap(env.grid_size, env.n_snakes)
+
     # model = deepq.models.cnn_to_mlp(
     #     convs=[(32, 5, 1), (64, 3, 1), (64, 3, 1)],
     #     hiddens=[512, 256],
@@ -74,12 +78,14 @@ def main():
     # )
     tf.Session().__enter__()
 
-    num_timesteps = 4
+
+    num_timesteps = 4e6
+
     policy =  CnnPolicy
     model = ppo2.learn(policy=policy, env=env, nsteps=2048, nminibatches=4,
         noptepochs=2, log_interval=10,
         ent_coef=.01,
-        lr=lambda f : f * 1e-4,
+        lr=lambda f : f * 1e-5,
         cliprange=lambda f : f * 0.3,
         total_timesteps=int(num_timesteps * 1.1),
         save_interval=50,
@@ -89,21 +95,23 @@ def main():
 
     obs = np.zeros((env.num_envs,) + env.observation_space.shape)
     obs[:] = env.reset()
-    heatmap = HeatMap(env.grid_size, env.n_snakes)
+
+    counter = 0
     while True:
         actions = model.step(obs)[0]
         obs[:], rewards, done, info = env.step(actions)
-        #env.render()
 
         for i, snake in enumerate(env.controller.snakes):
             if snake is not None:
                 heatmap.visit(snake.head, i)
 
-        heatmap.plot(0)
+        if counter % 50 == 0:
+            heatmap.plot()
 
         if all(done):
             env.reset()
 
+        counter += 1
 
 if __name__ == '__main__':
     main()
