@@ -15,11 +15,9 @@ import datetime
 import time
 import tensorflow as tf
 import numpy as np
+from os.path import expanduser
 
 from gym_snake.envs.snake.heatmap import HeatMap
-
-
-
 
 
 def main():
@@ -33,7 +31,7 @@ def main():
 
     ts = time.time()
     ts_str = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
-    save_path = os.path.join('/home/pasa/deeplearning/tf_models/snake/', ts_str)
+    save_path = os.path.join(expanduser("~"), 'tf_models/snake/', ts_str)
     if not os.path.exists(save_path):
         os.makedirs(save_path)
 
