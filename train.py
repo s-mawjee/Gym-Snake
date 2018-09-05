@@ -41,7 +41,7 @@ def main():
 
     logger.configure(save_path, format_strs=['stdout','log','csv','tensorboard'])
 
-    env = gym_snake.envs.SnakeEnv(grid_size=[15, 15], unit_size=1, snake_size=4, unit_gap=0, n_snakes=3, n_foods=9)
+    env = gym_snake.envs.SnakeEnv(grid_size=[25, 25], unit_size=1 , unit_gap=0, n_snakes=10, n_foods=6)
 
     heatmap = HeatMap(env.grid_size, env.n_snakes)
 
@@ -79,12 +79,12 @@ def main():
     tf.Session().__enter__()
 
 
-    num_timesteps = 4e6
+    num_timesteps = 4e7
 
     policy =  CnnPolicy
-    model = ppo2.learn(policy=policy, env=env, nsteps=2048, nminibatches=4,
+    model = ppo2.learn(policy=policy, env=env, nsteps=2048, nminibatches=128,
         noptepochs=2, log_interval=10,
-        ent_coef=.01,
+        ent_coef=.005,
         lr=lambda f : f * 1e-5,
         cliprange=lambda f : f * 0.3,
         total_timesteps=int(num_timesteps * 1.1),
@@ -99,13 +99,14 @@ def main():
     while True:
         actions = model.step(obs)[0]
         obs[:], rewards, done, info = env.step(actions)
-
+        env.render()
         for i, snake in enumerate(env.controller.snakes):
             if snake is not None:
                 heatmap.visit(snake.head, i)
 
         if counter % 50 == 0:
-            heatmap.plot()
+            pass
+            # heatmap.plot()
 
         if all(done):
             env.reset()

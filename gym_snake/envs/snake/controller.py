@@ -11,11 +11,9 @@ class Controller():
     This class combines the Snake, Food, and Grid classes to handle the game logic.
     """
 
-    def __init__(self, grid_size=[30,30], unit_size=10, unit_gap=1, snake_size=3, n_snakes=1, n_foods=1, random_init=True):
+    def __init__(self, grid_size=[30,30], unit_size=10, unit_gap=1, n_snakes=1, n_foods=1, random_init=True):
 
-        assert n_snakes < grid_size[0]//3
-        assert n_snakes < 25
-        assert snake_size < grid_size[1]//2
+        assert n_snakes < sum(grid_size)
         assert unit_gap >= 0 and unit_gap < unit_size
 
         self.done = False
@@ -30,8 +28,15 @@ class Controller():
         self.local_views = []
         self.local_actions = []
         for i in range(1,n_snakes+1):
-            start_coord = [i*grid_size[0]//(n_snakes+1), snake_size+1]
-            self.snakes.append(Snake(start_coord, snake_size))
+
+            while True:
+                head_coord = (np.random.randint(1, self.grid.grid_size[0]-1), np.random.randint(1, self.grid.grid_size[1])-1)
+                body_coord = head_coord - np.asarray([0, 1]).astype(np.int)
+                if np.array_equal(self.grid.color_of(head_coord), self.grid.SPACE_COLOR) and \
+                   np.array_equal(self.grid.color_of(body_coord), self.grid.SPACE_COLOR):
+                    break
+
+            self.snakes.append(Snake(head_coord, 2))
             color = self.grid.HEAD_COLOR
             self.snakes[-1].head_color = color
             self.grid.draw_snake(self.snakes[-1], color)
