@@ -31,7 +31,7 @@ def main():
 
     ts = time.time()
     ts_str = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
-    save_path = os.path.join(expanduser("~"), 'tf_models/snake/', ts_str)
+    save_path = os.path.join(expanduser("~"), 'deeplearning/tf_models/snake/', ts_str)
     if not os.path.exists(save_path):
         os.makedirs(save_path)
 
@@ -77,13 +77,13 @@ def main():
     tf.Session().__enter__()
 
 
-    num_timesteps = 4e7
+    num_timesteps = 4e8
 
     policy =  CnnPolicy
-    model = ppo2.learn(policy=policy, env=env, nsteps=2048, nminibatches=128,
-        noptepochs=2, log_interval=10,
+    model = ppo2.learn(policy=policy, env=env, nsteps=2048, nminibatches=128, #gamma=0.9,
+        noptepochs=10, log_interval=10,
         ent_coef=.005,
-        lr=lambda f : f * 1e-5,
+        lr=lambda f : f * 5e-5,
         cliprange=lambda f : f * 0.3,
         total_timesteps=int(num_timesteps * 1.1),
         save_interval=50)
