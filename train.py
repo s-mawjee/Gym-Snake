@@ -37,7 +37,7 @@ def main():
 
     print("Model storage/load path: " + save_path)
 
-    logger.configure(save_path, format_strs=['stdout','log','csv','tensorboard'])
+    logger.configure(save_path, format_strs=['stdout'])
 
     env = gym_snake.envs.SnakeEnv(grid_size=[25, 25], unit_size=1 , unit_gap=0, n_snakes=10, n_foods=6)
 
@@ -77,16 +77,16 @@ def main():
     tf.Session().__enter__()
 
 
-    num_timesteps = 4e8
+    num_timesteps = 4
 
     policy =  CnnPolicy
     model = ppo2.learn(policy=policy, env=env, nsteps=2048, nminibatches=128, gamma=0.8,
         noptepochs=10, log_interval=10,
         ent_coef=.005,
-        lr=lambda f : f * 5e-5,
+        lr=lambda f : f * 0.0,
         cliprange=lambda f : f * 0.3,
         total_timesteps=int(num_timesteps * 1.1),
-        save_interval=50)
+        save_interval=10)
 
 
 
