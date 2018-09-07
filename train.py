@@ -31,13 +31,14 @@ def main():
 
     ts = time.time()
     ts_str = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
+    ts_str ="2018-09-07_13-31-02"
     save_path = os.path.join(expanduser("~"), 'deeplearning/tf_models/snake/', ts_str)
     if not os.path.exists(save_path):
         os.makedirs(save_path)
 
     print("Model storage/load path: " + save_path)
 
-    logger.configure(save_path, format_strs=['stdout'])
+    logger.configure(save_path, format_strs=['stdout', 'log','csv','tensorboard'])
 
     env = gym_snake.envs.SnakeEnv(grid_size=[25, 25], unit_size=1 , unit_gap=0, n_snakes=10, n_foods=6)
 
@@ -83,7 +84,7 @@ def main():
     model = ppo2.learn(policy=policy, env=env, nsteps=2048, nminibatches=128, gamma=0.8,
         noptepochs=10, log_interval=10,
         ent_coef=.005,
-        lr=lambda f : f * 0.0,
+        lr=lambda f : f * 5e-4,
         cliprange=lambda f : f * 0.3,
         total_timesteps=int(num_timesteps * 1.1),
         save_interval=10)
