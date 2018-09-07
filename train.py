@@ -77,7 +77,7 @@ def main():
     tf.Session().__enter__()
 
 
-    num_timesteps = 4
+    num_timesteps = 4e8
 
     policy =  CnnPolicy
     model = ppo2.learn(policy=policy, env=env, nsteps=2048, nminibatches=128, gamma=0.7,
