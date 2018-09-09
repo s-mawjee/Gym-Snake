@@ -87,13 +87,13 @@ def main():
     num_timesteps = 4e8
 
     policy =  CnnPolicy
-    model = ppo2.learn(policy=policy, env=env, nsteps=2048, nminibatches=32, gamma=0.7,
+    model = ppo2.learn(policy=policy, env=env, nsteps=2048, nminibatches=8, gamma=0.7,
         noptepochs=10, log_interval=10,
         ent_coef=.005,
-        lr=lambda f : f * 1e-5,
+        lr=lambda f : f * 5e-4,
         cliprange=lambda f : f * 0.3,
         total_timesteps=int(num_timesteps * 1.1),
-        save_interval=10, load_path='/home/pasa/deeplearning/tf_models/snake/2018-09-09_10-53-44/checkpoints/00120')
+        save_interval=10)
 
 
 
