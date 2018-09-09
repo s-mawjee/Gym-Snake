@@ -31,7 +31,7 @@ def main():
 
     ts = time.time()
     ts_str = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
-    ts_str ="2018-09-07_13-31-02"
+    #ts_str ="2018-09-07_13-31-02"
     save_path = os.path.join(expanduser("~"), 'deeplearning/tf_models/snake/', ts_str)
     if not os.path.exists(save_path):
         os.makedirs(save_path)
@@ -81,13 +81,13 @@ def main():
     num_timesteps = 4e8
 
     policy =  CnnPolicy
-    model = ppo2.learn(policy=policy, env=env, nsteps=2048, nminibatches=128, gamma=0.8,
+    model = ppo2.learn(policy=policy, env=env, nsteps=2048, nminibatches=32, gamma=0.7,
         noptepochs=10, log_interval=10,
         ent_coef=.005,
-        lr=lambda f : f * 5e-4,
+        lr=lambda f : f * 1e-5,
         cliprange=lambda f : f * 0.3,
         total_timesteps=int(num_timesteps * 1.1),
-        save_interval=10)
+        save_interval=10, load_path='/home/pasa/deeplearning/tf_models/snake/2018-09-09_10-53-44/checkpoints/00120')
 
 
 
