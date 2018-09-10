@@ -27,14 +27,6 @@ from gym_snake.envs.snake.heatmap import HeatMap
 
 
 def main():
-
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--gpu', type=str, default=None)
-
-    args = parser.parse_args()
-
-    os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
-
     ts = time.time()
     ts_str = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
     #ts_str ="2018-09-07_13-31-02"
@@ -46,7 +38,7 @@ def main():
 
     logger.configure(save_path, format_strs=['stdout', 'log','csv','tensorboard'])
 
-    env = gym_snake.envs.SnakeEnv(grid_size=[25, 25], unit_size=1 , unit_gap=0, n_snakes=10, n_foods=6)
+    env = gym_snake.envs.SnakeEnv(grid_size=[19, 19], unit_size=1 , unit_gap=0, n_snakes=10, n_foods=6)
 
     heatmap = HeatMap(env.grid_size, env.n_snakes)
 
@@ -87,13 +79,13 @@ def main():
     num_timesteps = 4e8
 
     policy =  CnnPolicy
-    model = ppo2.learn(policy=policy, env=env, nsteps=2048, nminibatches=8, gamma=0.7,
-        noptepochs=10, log_interval=10,
-        ent_coef=.005,
+    model = ppo2.learn(policy=policy, env=env, nsteps=2048, nminibatches=1, gamma=0.7,
+        noptepochs=20, log_interval=10,
+        ent_coef=.00,
         lr=lambda f : f * 5e-4,
         cliprange=lambda f : f * 0.3,
         total_timesteps=int(num_timesteps * 1.1),
-        save_interval=10)
+        save_interval=10, load_path='/home/pasa/deeplearning/tf_models/snake/2018-09-10_23-10-49/checkpoints/00420')
 
 
 
@@ -118,5 +110,18 @@ def main():
 
         counter += 1
 
+
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('--gpu', type=str, default=None)
+
+    args = parser.parse_args()
+
+    os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
+    config = tf.ConfigProto()
+    config.graph_options.optimizer_options.global_jit_level = tf.OptimizerOptions.ON_1
+
+    sess = tf.Session(config=config)
+
+    with sess.as_default():
+        main()
