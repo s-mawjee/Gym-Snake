@@ -38,7 +38,7 @@ def main():
 
     logger.configure(save_path, format_strs=['stdout', 'log','csv','tensorboard'])
 
-    env = gym_snake.envs.SnakeEnv(grid_size=[19, 19], unit_size=1 , unit_gap=0, n_snakes=10, n_foods=6)
+    env = gym_snake.envs.SnakeEnv(grid_size=[11, 11], unit_size=1 , unit_gap=0, n_snakes=5, n_foods=3)
 
     heatmap = HeatMap(env.grid_size, env.n_snakes)
 
@@ -76,10 +76,10 @@ def main():
     tf.Session().__enter__()
 
 
-    num_timesteps = 0
+    num_timesteps = 1e8
 
     policy =  CnnPolicy
-    model = ppo2.learn(policy=policy, env=env, nsteps=2048*4, nminibatches=4, gamma=0.7,
+    model = ppo2.learn(policy=policy, env=env, nsteps=2048*4, nminibatches=2, gamma=0.7,
         noptepochs=10, log_interval=10,
         ent_coef=.00,
         lr=lambda f : f * 1e-4,
