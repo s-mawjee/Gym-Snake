@@ -38,7 +38,7 @@ def main():
 
     logger.configure(save_path, format_strs=['stdout', 'log','csv','tensorboard'])
 
-    env = gym_snake.envs.SnakeEnv(grid_size=[11, 11], unit_size=1 , unit_gap=0, n_snakes=5, n_foods=3)
+    env = gym_snake.envs.SnakeEnv(grid_size=[11, 11], unit_size=1 , unit_gap=0, n_snakes=1, n_foods=3)
 
     heatmap = HeatMap(env.grid_size, env.n_snakes)
 
@@ -76,16 +76,16 @@ def main():
     tf.Session().__enter__()
 
 
-    num_timesteps = 1e8
+    num_timesteps = 0
 
     policy =  CnnPolicy
-    model = ppo2.learn(policy=policy, env=env, nsteps=2048*4, nminibatches=2, gamma=0.7,
+    model = ppo2.learn(policy=policy, env=env, nsteps=2048*1, nminibatches=1, gamma=0.7,
         noptepochs=10, log_interval=10,
         ent_coef=.00,
-        lr=lambda f : f * 1e-4,
+        lr=lambda f : f * 0,
         cliprange=lambda f : f * 0.3,
         total_timesteps=int(num_timesteps * 1.1),
-        save_interval=10)
+        save_interval=10, load_path="/home/pasa/deeplearning/tf_models/snake/2018-09-16_17-44-05/checkpoints/00100")
 
 
 
@@ -96,6 +96,7 @@ def main():
     while True:
         actions = model.step(obs)[0]
         obs[:], rewards, done, info = env.step(actions)
+        #print(actions)
         env.render()
         for i, snake in enumerate(env.controller.snakes):
             if snake is not None:

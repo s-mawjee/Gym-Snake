@@ -199,8 +199,6 @@ class Controller():
         #print(dones)
         #print("*******************")
 
-        if self.snakes_remaining <= 2 or self.grid.open_space < 1:
-            dones = [True]*len(self.snakes)
 
 
         assert(len(obs) == len(self.snakes))
