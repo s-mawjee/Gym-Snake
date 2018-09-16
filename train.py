@@ -38,7 +38,8 @@ def main():
 
     logger.configure(save_path, format_strs=['stdout', 'log','csv','tensorboard'])
 
-    env = gym_snake.envs.SnakeEnv(grid_size=[11, 11], unit_size=1 , unit_gap=0, n_snakes=1, n_foods=3)
+
+    env = gym_snake.envs.SnakeEnv(grid_size=[5, 5], unit_size=1 , unit_gap=0, n_snakes=1, n_foods=3)
 
     heatmap = HeatMap(env.grid_size, env.n_snakes)
 
@@ -73,19 +74,21 @@ def main():
     #     print_freq=10,
     #     only_load=False
     # )
-    tf.Session().__enter__()
+    #tf.Session().__enter__()
 
 
-    num_timesteps = 0
+
+    num_timesteps = 1e7
 
     policy =  CnnPolicy
-    model = ppo2.learn(policy=policy, env=env, nsteps=2048*1, nminibatches=1, gamma=0.7,
-        noptepochs=10, log_interval=10,
+    model = ppo2.learn(policy=policy, env=env, nsteps=2048, nminibatches=1, gamma=0.9,
+        noptepochs=10, log_interval=1,
         ent_coef=.00,
-        lr=lambda f : f * 0,
+        lr=lambda f : f *5e-6,
         cliprange=lambda f : f * 0.3,
         total_timesteps=int(num_timesteps * 1.1),
-        save_interval=10, load_path="/home/pasa/deeplearning/tf_models/snake/2018-09-16_17-44-05/checkpoints/00100")
+        save_interval=10)
+
 
 
 

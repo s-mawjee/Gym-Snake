@@ -60,7 +60,7 @@ class Grid():
         coord - x,y integer coordinates as a tuple, list, or ndarray
         """
 
-        return self.grid[int(coord[1]*self.unit_size), int(coord[0]*self.unit_size)]
+        return self.grid[coord[1], coord[0]]
 
     def connect(self, coord1, coord2, color=BODY_COLOR):
         """

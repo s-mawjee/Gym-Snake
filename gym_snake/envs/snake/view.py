@@ -51,7 +51,7 @@ class LocalAction:
     RIGHT = -1
     LEFT = 1
     def __init__(self):
-        self.prev_action = Snake.UP
+        self.reset()
 
     def transform(self, local_action):
         assert(local_action == self.FWD or local_action == self.RIGHT or local_action == self.LEFT)
@@ -64,4 +64,4 @@ class LocalAction:
         return action
 
     def reset(self):
-        self.prev_action = Snake.UP
+        self.prev_action = Snake.DOWN
