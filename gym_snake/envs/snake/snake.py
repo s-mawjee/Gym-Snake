@@ -1,4 +1,5 @@
 from queue import deque
+import gym_snake.envs.snake
 import numpy as np
 
 class Snake():
@@ -25,7 +26,7 @@ class Snake():
 
         self.direction = self.DOWN
         self.head = np.asarray(head_coord_start).astype(np.int)
-        self.head_color = np.array([255,0,0], np.uint8)
+        self.head_color = gym_snake.envs.snake.Grid.HEAD_COLOR
         self.body = deque()
         for i in range(length-1, 0, -1):
             self.body.append(self.head-np.asarray([0,i]).astype(np.int))

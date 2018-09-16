@@ -15,11 +15,11 @@ class LocalView:
     def __init__(self):
         pass
     def get_zero(self, grid):
-        return np.expand_dims(np.zeros((grid.grid.shape[0]*2+1, grid.grid.shape[1]*2+1), np.int8), -1)
+        return np.expand_dims(np.zeros((grid.grid.shape[0]*2+1, grid.grid.shape[1]*2+1), np.float), -1)
 
     def get(self, grid, offset = (0,0), action = None):
         assert(np.array_equal(np.asarray(grid.grid.shape[0:2]) % 2, np.asarray([1, 1])))
-        local_grid = np.zeros((grid.grid.shape[0]*2+1, grid.grid.shape[1]*2+1), np.int8)
+        local_grid = np.zeros((grid.grid.shape[0]*2+1, grid.grid.shape[1]*2+1), np.float)
         grid_size = np.array(grid.grid.shape[0:2], dtype=np.int8)
         offset = np.roll(offset, 1)
         start = grid_size - offset

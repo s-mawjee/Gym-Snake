@@ -18,12 +18,12 @@ class Grid():
     # SPACE_COLOR = np.array([0,255,0], dtype=np.uint8)
     # WALL_COLOR = np.array([0,0,0], dtype=np.uint8)
 
-    BODY_COLOR = np.array(-1, dtype=np.int8)
-    HEAD_COLOR = np.array(-2, dtype=np.int8)
-    FOOD_COLOR = np.array(3, dtype=np.uint8)
-    SPACE_COLOR = np.array(1, dtype=np.uint8)
-    WALL_COLOR = np.array(0, dtype=np.uint8)
-    OWN_HEAD_COLOR = np.array(2, dtype=np.uint8)
+    BODY_COLOR = np.array(-1.0, dtype=np.float)
+    HEAD_COLOR = np.array(-2.0, dtype=np.float)
+    FOOD_COLOR = np.array(3.0, dtype=np.float)
+    SPACE_COLOR = np.array(1.0, dtype=np.float)
+    WALL_COLOR = np.array(-0.0, dtype=np.float)
+    OWN_HEAD_COLOR = np.array(2.0, dtype=np.float)
 
     def __init__(self, grid_size=[30,30], unit_size=10, unit_gap=1):
         """
@@ -40,7 +40,7 @@ class Grid():
         # channels = len(self.BODY_COLOR)
         # self.grid = np.zeros((height, width, channels), dtype=np.uint8)
 
-        self.grid = np.zeros((height, width), dtype=np.int8)
+        self.grid = np.zeros((height, width), dtype=np.float)
 
         self.grid[:,:] = self.SPACE_COLOR
         self.open_space = grid_size[0]*grid_size[1]
@@ -108,7 +108,7 @@ class Grid():
         end_x = x+self.unit_size-self.unit_gap
         y = int(coord[1]*self.unit_size)
         end_y = y+self.unit_size-self.unit_gap
-        self.grid[y:end_y, x:end_x] = np.asarray(color, dtype=np.int8)
+        self.grid[y:end_y, x:end_x] = np.asarray(color, dtype=np.float)
         return True
 
     def draw(self, coord, color):

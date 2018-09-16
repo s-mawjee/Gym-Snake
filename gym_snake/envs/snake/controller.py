@@ -79,7 +79,7 @@ class Controller():
 
         snake = self.snakes[snake_idx]
         if type(snake) == type(None):
-            return 0
+            return 0.0
 
         # Check for death of snake
         if self.grid.check_death(snake.head):
@@ -87,7 +87,7 @@ class Controller():
             self.snakes[snake_idx] = None
             self.grid.cover(snake.head, snake.head_color) # Avoid miscount of grid.open_space
             self.grid.connect(snake.body.popleft(), snake.body[0], self.grid.SPACE_COLOR)
-            reward = -2.0
+            reward = -1.0
         # Check for reward
         elif self.grid.food_space(snake.head):
             self.grid.draw(snake.body[0], self.grid.BODY_COLOR) # Redraw tail
@@ -96,7 +96,7 @@ class Controller():
             reward = 1.0
             self.grid.new_food()
         else:
-            reward = 0.0
+            reward = 0.00
             empty_coord = snake.body.popleft()
             self.grid.connect(empty_coord, snake.body[0], self.grid.SPACE_COLOR)
             self.grid.draw(snake.head, snake.head_color)
