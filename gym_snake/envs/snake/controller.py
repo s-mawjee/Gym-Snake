@@ -5,6 +5,7 @@ from gym_snake.envs.snake.view import LocalAction
 import numpy as np
 import time
 import matplotlib.pyplot as plt
+import numba
 
 class Controller():
     """
@@ -153,7 +154,7 @@ class Controller():
 
         obs = []
         dones = []
-
+        directions = []
         for i, snakes in enumerate(self.snakes):
             if self.snakes[i] is not None:
                 direction = actions[i]
@@ -165,11 +166,10 @@ class Controller():
                 #print("direction: " + str(direction))
                 #print(rewards)
                 if self.snakes[i] is not None:
-                    obs.append(self.local_views[i].get(self.grid, self.snakes[i].head, direction))
                     dones.append(False)
+                    directions.append(direction)
 
                 if self.snakes[i] is None:
-                    #print("DEAD")
                     if self.dead_snakes[i] is not None:
                         self.kill_snake(i)
 
@@ -181,14 +181,17 @@ class Controller():
                     self.dead_snakes[i] = None
                     self.erased_snakes[i] = None
 
-                    obs.append(self.local_views[i].get(self.grid, self.snakes[i].head, direction))
                     self.local_actions[i].reset()
                     dones.append(True)
+                    directions.append(None)
                     self.snakes_remaining += 1
                     # plt.imshow(np.squeeze(obs[i]), interpolation='none')
                     # plt.show()
             else:
                 assert "Should not happen"
+
+        for i, snakes in enumerate(self.snakes):
+            obs.append(self.local_views[i].get(self.grid, self.snakes[i].head, directions[i]))
 
         # plt.imshow(np.squeeze(obs[0]), interpolation='none')
         # plt.show()
