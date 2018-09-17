@@ -60,7 +60,8 @@ class SnakeEnv(gym.Env):
             self.viewer.set_data(np.squeeze(self.controller.grid.grid))
             #self.viewer.set_data(np.squeeze(self.controller.grid.grid))
 
-        plt.pause(0.07)
+        print(self.controller.grid.grid.shape)
+        plt.pause(0.01)
         plt.draw()
 
     def seed(self, x):

@@ -90,20 +90,21 @@ class Controller():
         if self.grid.check_death(snake.head):
             self.dead_snakes[snake_idx] = self.snakes[snake_idx]
             self.snakes[snake_idx] = None
-            self.grid.cover(snake.head, snake.head_color) # Avoid miscount of grid.open_space
-            self.grid.connect(snake.body.popleft(), snake.body[0], self.grid.SPACE_COLOR)
+
+            #self.grid.cover(snake.head, snake.head_color) # Avoid miscount of grid.open_space
+            #self.grid.connect(snake.body.popleft(), snake.body[0], self.grid.SPACE_COLOR)
             reward = -1.0
         # Check for reward
         elif self.grid.food_space(snake.head):
             self.grid.draw(snake.body[0], self.grid.BODY_COLOR) # Redraw tail
-            self.grid.connect(snake.body[0], snake.body[1], self.grid.BODY_COLOR)
+            #self.grid.connect(snake.body[0], snake.body[1], self.grid.BODY_COLOR)
             self.grid.cover(snake.head, snake.head_color) # Avoid miscount of grid.open_space
             reward = 1.0
             self.grid.new_food()
         else:
             reward = 0.00
             empty_coord = snake.body.popleft()
-            self.grid.connect(empty_coord, snake.body[0], self.grid.SPACE_COLOR)
+            #self.grid.connect(empty_coord, snake.body[0], self.grid.SPACE_COLOR)
             self.grid.draw(snake.head, snake.head_color)
 
         self.grid.connect(snake.body[-1], snake.head, self.grid.BODY_COLOR)
@@ -116,7 +117,7 @@ class Controller():
         """
         
         assert self.dead_snakes[snake_idx] is not None
-        self.grid.erase(self.dead_snakes[snake_idx].head)
+        #self.grid.erase(self.dead_snakes[snake_idx].head)
         self.grid.erase_snake_body(self.dead_snakes[snake_idx])
         self.erased_snakes[snake_idx] = self.dead_snakes[snake_idx]
         self.dead_snakes[snake_idx] = None
@@ -189,8 +190,8 @@ class Controller():
             else:
                 assert "Should not happen"
 
-
-
+        # plt.imshow(np.squeeze(obs[0]), interpolation='none')
+        # plt.show()
 
         # if self.done:
         #     rewards = [0]
