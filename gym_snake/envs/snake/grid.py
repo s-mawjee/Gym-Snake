@@ -20,10 +20,10 @@ class Grid():
 
     BODY_COLOR = np.array(-1.0, dtype=np.float)
     HEAD_COLOR = np.array(-2.0, dtype=np.float)
-    FOOD_COLOR = np.array(3.0, dtype=np.float)
-    SPACE_COLOR = np.array(1.0, dtype=np.float)
-    WALL_COLOR = np.array(-0.0, dtype=np.float)
-    OWN_HEAD_COLOR = np.array(2.0, dtype=np.float)
+    FOOD_COLOR = np.array(2.0, dtype=np.float)
+    SPACE_COLOR = np.array(0.0, dtype=np.float)
+    WALL_COLOR = np.array(-1.0, dtype=np.float)
+    OWN_HEAD_COLOR = np.array(1.0, dtype=np.float)
 
     def __init__(self, grid_size=[30,30], unit_size=10, unit_gap=1):
         """
