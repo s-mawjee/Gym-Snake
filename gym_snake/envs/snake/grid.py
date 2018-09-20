@@ -18,12 +18,12 @@ class Grid():
     # SPACE_COLOR = np.array([0,255,0], dtype=np.uint8)
     # WALL_COLOR = np.array([0,0,0], dtype=np.uint8)
 
-    BODY_COLOR = np.array(-1.0, dtype=np.float)
-    HEAD_COLOR = np.array(-2.0, dtype=np.float)
-    FOOD_COLOR = np.array(2.0, dtype=np.float)
-    SPACE_COLOR = np.array(0.0, dtype=np.float)
-    WALL_COLOR = np.array(-1.0, dtype=np.float)
-    OWN_HEAD_COLOR = np.array(1.0, dtype=np.float)
+    BODY_COLOR = np.array([1, 0, 0], dtype=np.float)
+    HEAD_COLOR = np.array([0, 0, 1], dtype=np.float)
+    FOOD_COLOR = np.array([0, 1, 0], dtype=np.float)
+    SPACE_COLOR = np.array([0, 0, 0], dtype=np.float)
+    WALL_COLOR = np.array([1, 0, 0], dtype=np.float)
+    OWN_HEAD_COLOR = np.array([0, 0, 1], dtype=np.float)
 
     def __init__(self, grid_size=[30,30], unit_size=10, unit_gap=1):
         """
@@ -40,7 +40,7 @@ class Grid():
         # channels = len(self.BODY_COLOR)
         # self.grid = np.zeros((height, width, channels), dtype=np.uint8)
 
-        self.grid = np.zeros((height, width), dtype=np.float)
+        self.grid = np.zeros((height, width, 3), dtype=np.float)
 
         self.grid[:,:] = self.SPACE_COLOR
         self.open_space = grid_size[0]*grid_size[1]
@@ -254,4 +254,4 @@ class Grid():
         """
 
         color = self.color_of(coord)
-        return np.array_equal(color, self.BODY_COLOR) or color == self.HEAD_COLOR
+        return np.array_equal(color, self.BODY_COLOR) or np.array_equal(color, self.HEAD_COLOR)

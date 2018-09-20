@@ -55,8 +55,8 @@ class Controller():
             head_coord = (np.random.randint(1, self.grid.grid_size[0] - 1), np.random.randint(1, self.grid.grid_size[1] - 1))
             body_coord = head_coord - np.asarray([0, 1]).astype(np.int)
 
-            if self.grid.color_of(head_coord) == self.grid.SPACE_COLOR and \
-               self.grid.color_of(body_coord) == self.grid.SPACE_COLOR:
+            if np.array_equal(self.grid.color_of(head_coord), self.grid.SPACE_COLOR) and \
+               np.array_equal(self.grid.color_of(body_coord), self.grid.SPACE_COLOR):
                 break
 
         return head_coord
