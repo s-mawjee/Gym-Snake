@@ -39,7 +39,7 @@ def main():
     logger.configure(save_path, format_strs=['stdout', 'log','csv','tensorboard'])
 
 
-    env = gym_snake.envs.SnakeEnv(grid_size=[19, 19], unit_size=1 , unit_gap=0, n_snakes=5, n_foods=15)
+    env = gym_snake.envs.SnakeEnv(grid_size=[11, 11], unit_size=1 , unit_gap=0, n_snakes=5, n_foods=3)
 
     heatmap = HeatMap(env.grid_size, env.n_snakes)
 
@@ -81,7 +81,7 @@ def main():
     num_timesteps = 5e7
 
     policy =  CnnPolicy
-    model = ppo2.learn(policy=policy, env=env, nsteps=2048*8, nminibatches=256, gamma=0.9,
+    model = ppo2.learn(policy=policy, env=env, nsteps=2048*8, nminibatches=32, gamma=0.9,
         noptepochs=1, log_interval=1,
         ent_coef=.00,
         lr=lambda f : f *1e-5,
@@ -111,7 +111,10 @@ def main():
 
 
         counter += 1
-
+        input()
+        if(any(done)):
+            print("Snake death")
+            print('\a')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
