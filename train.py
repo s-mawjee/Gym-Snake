@@ -81,7 +81,7 @@ def main():
     num_timesteps = 1e8
 
     policy =  CnnPolicy
-    model = ppo2.learn(policy=policy, env=env, nsteps=2048*8, nminibatches=32, gamma=0.9, vf_coef=2.0,
+    model = ppo2.learn(policy=policy, env=env, nsteps=2048*8, nminibatches=1, gamma=0.9, vf_coef=2.0,
         noptepochs=1, log_interval=1,
         ent_coef=.00,
         lr=lambda f : f *1e-5,

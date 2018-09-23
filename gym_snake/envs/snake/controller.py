@@ -5,7 +5,6 @@ from gym_snake.envs.snake.view import LocalAction
 import numpy as np
 import time
 import matplotlib.pyplot as plt
-import numba
 
 class Controller():
     """
