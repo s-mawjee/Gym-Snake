@@ -1,3 +1,6 @@
 [submodule "baselines"]
 	path = baselines
 	url = https://github.com/deeplearningrobotics/baselines.git
+[submodule "models"]
+	path = models
+	url = https://github.com/tensorflow/models.git
