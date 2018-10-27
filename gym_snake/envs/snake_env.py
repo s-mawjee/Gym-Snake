@@ -4,13 +4,10 @@ from gym import error, spaces, utils
 from gym.utils import seeding
 from gym_snake.envs.snake import Controller
 from gym_snake.envs.snake.view import LocalView
+from gym_snake.envs.snake.game_render import GameRender
+import  time
 
 import numpy as np
-
-try:
-    import matplotlib.pyplot as plt
-except ImportError as e:
-    raise error.DependencyNotInstalled("{}. (HINT: see matplotlib documentation for installation https://matplotlib.org/faq/installing_faq.html#installation".format(e))
 
 class SnakeEnv(gym.Env):
     metadata = {'render.modes': ['human']}
@@ -26,8 +23,9 @@ class SnakeEnv(gym.Env):
         self.action_space = spaces.Discrete(3)
         self.observation_space = spaces.Box(low=-2, high=2,
             shape=(self.grid_size[0]*2+1, self.grid_size[1]*2+1, 1), dtype=np.float32)
-        # self.observation_space = spaces.Box(low=-2, high=2,
-        #     shape=([27*27]), dtype=np.int8)
+
+
+        self.viewer = GameRender(self.observation_space.shape)
         self.random_init = random_init
         self.action_transformer = action_transformer
 
@@ -55,17 +53,12 @@ class SnakeEnv(gym.Env):
         return self.last_obs
 
     def render(self, mode='human', close=False):
-        if self.viewer is None:
-            self.viewer = plt.imshow(np.squeeze(self.last_obs), interpolation='none')
-            #self.viewer = plt.imshow(self.controller.grid.grid, interpolation='none')
-        else:
-            self.viewer.set_data(np.squeeze(self.last_obs))
-            #self.viewer.set_data(np.squeeze(self.controller.grid.grid))
-
-        plt.pause(1.4)
-        plt.draw()
+        self.viewer.render(np.squeeze(self.last_obs))
+        #time.sleep(0.1)
 
     def seed(self, x):
         pass
 
+    def close(self):
+        self.viewer.cleanup()
 

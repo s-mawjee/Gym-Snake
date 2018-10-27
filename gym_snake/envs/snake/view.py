@@ -1,20 +1,17 @@
 from gym_snake.envs.snake import Snake
-from gym_snake.envs.snake import Grid
-import copy
-import matplotlib.pyplot as plt
 import numpy as np
-import time
+
 class BaseView:
     def __init__(self, grid):
         self.grid = grid
         self.prev_action = Snake.DOWN
 
-    def get(self, action, snake_id):
-        return grid
+    def get(self, offset=(0, 0), action=None):
+        self.prev_action = action
+        return self.grid.grid
 
 class LocalView:
     def __init__(self, grid):
-        #super.__init__(BaseView, grid)
         self.grid = grid
         self.prev_action = Snake.DOWN
 
